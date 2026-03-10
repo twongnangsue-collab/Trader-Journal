@@ -1,0 +1,313 @@
+/* กำหนดชุดสี: โหมดสว่าง */
+:root {
+    --bg-color: #f4f7f6; --box-bg: #ffffff; --text-color: #333333; --text-muted: #777777;
+    --border-color: #eeeeee; --card-bg: #fafafa; --card-border: #dddddd; --input-bg: #ffffff;
+    --btn-bg: #e9ecef; --btn-hover: #d3d9df; --shadow-color: rgba(0, 0, 0, 0.05);
+    --circle-bg: linear-gradient(135deg, #ffffff, #f8f9fa);
+}
+
+/* กำหนดชุดสี: โหมดกลางคืน (Dark Mode) */
+body.dark-mode {
+    --bg-color: #121212; --box-bg: #1e1e1e; --text-color: #f0f0f0; --text-muted: #aaaaaa;
+    --border-color: #333333; --card-bg: #2a2a2a; --card-border: #444444; --input-bg: #222222;
+    --btn-bg: #333333; --btn-hover: #444444; --shadow-color: rgba(0, 0, 0, 0.3);
+    --circle-bg: linear-gradient(135deg, #2a2a2a, #1e1e1e);
+}
+
+/* การตั้งค่าพื้นฐาน */
+body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); display: flex; justify-content: center; margin: 0; padding: 20px; transition: 0.3s; }
+.app-container { background-color: var(--box-bg); width: 100%; max-width: 400px; min-height: 600px; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px var(--shadow-color); position: relative; transition: 0.3s; padding-bottom: 80px; margin: 0 auto;}
+.page-title { text-align: center; color: var(--text-color); margin-top: 0; margin-bottom: 20px; }
+
+/* ปุ่มมุมบน */
+.absolute-top-left { position: absolute; top: 20px; left: 20px; }
+.absolute-top-right { position: absolute; top: 20px; right: 20px; font-size: 16px; padding: 4px 8px; }
+.currency-toggle-btn, .theme-toggle-btn { background: var(--btn-bg); border: 1px solid #007bff; color: #007bff; border-radius: 12px; padding: 6px 10px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+.currency-toggle-btn:hover, .theme-toggle-btn:hover { background: #007bff; color: white; }
+
+/* วงกลมยอดเงิน */
+.balance-section { display: flex; flex-direction: column; align-items: center; margin: 30px 0; }
+.balance-circle { width: 180px; height: 180px; border-radius: 50%; background: var(--circle-bg); border: 6px solid #007bff; box-shadow: 0 10px 25px rgba(0, 123, 255, 0.2); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.balance-label { font-size: 14px; color: var(--text-muted); margin-bottom: 5px; }
+.balance-amount { font-size: 28px; font-weight: bold; color: var(--text-color); }
+.edit-btn { margin-top: 25px; padding: 10px 20px; border-radius: 20px; border: none; background-color: var(--btn-bg); color: var(--text-color); font-weight: bold; cursor: pointer; transition: 0.2s; }
+.edit-btn:hover { background-color: var(--btn-hover); }
+
+/* รายการล่าสุด */
+.recent-section { margin-top: 20px; }
+.section-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; margin-bottom: 15px; }
+.section-title { font-size: 16px; color: var(--text-muted); }
+.delete-all-btn { background: none; border: none; color: #dc3545; font-size: 12px; cursor: pointer; font-weight: bold; padding: 5px; border-radius: 5px; }
+.delete-all-btn:hover { background: #fee; }
+.empty-state { text-align: center; padding: 20px; background-color: var(--card-bg); border-radius: 10px; color: var(--text-muted); font-size: 14px; }
+
+/* การ์ดรายการ */
+.tx-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; margin-bottom: 10px; background-color: var(--card-bg); border-radius: 12px; border-left: 4px solid var(--card-border); cursor: pointer; transition: 0.2s; }
+.tx-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px var(--shadow-color); } 
+.tx-card.deposit { border-left-color: #28a745; }
+.tx-card.withdraw { border-left-color: #dc3545; }
+.tx-info h4 { margin: 0 0 4px 0; font-size: 14px; color: var(--text-color); }
+.tx-info p { margin: 0; font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+.tx-right-group { display: flex; align-items: center; gap: 10px; }
+.tx-amount { font-weight: bold; font-size: 15px; text-align: right; }
+.tx-amount.deposit { color: #28a745; }
+.tx-amount.withdraw { color: #dc3545; }
+.delete-tx-btn { background: none; border: none; font-size: 16px; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 5px; }
+.delete-tx-btn:hover { background: rgba(220,53,69,0.1); }
+
+/* เปอร์เซ็นต์กำไรในประวัติ */
+.history-percent { font-size: 11px; padding: 2px 6px; border-radius: 10px; margin-top: 3px; display: inline-block; font-weight: bold; }
+.history-percent.pos { background-color: rgba(40, 167, 69, 0.1); color: #28a745; }
+.history-percent.neg { background-color: rgba(220, 53, 69, 0.1); color: #dc3545; }
+
+/* Popups และ ทรงแคปซูล */
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background-color: var(--box-bg); padding: 25px; border-radius: 20px; width: 85%; max-width: 320px; color: var(--text-color); box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+
+.modal-label { font-size: 13px; color: var(--text-muted); font-weight: bold; display: block; margin: 15px 0 8px 0; }
+.custom-radio-group { display: flex; gap: 10px; margin-bottom: 5px; }
+.custom-radio-group input[type="radio"] { display: none; }
+.pill-btn { flex: 1; text-align: center; padding: 12px 10px; background-color: var(--card-bg); border: 2px solid var(--border-color); border-radius: 50px; font-size: 14px; font-weight: bold; color: var(--text-color); cursor: pointer; transition: all 0.2s; }
+.custom-radio-group input[type="radio"]:checked + .pill-btn { border-color: #007bff; background-color: #e6f2ff; color: #007bff; }
+body.dark-mode .custom-radio-group input[type="radio"]:checked + .pill-btn { background-color: rgba(0, 123, 255, 0.2); color: #4da3ff; }
+.custom-radio-group input[value="withdraw"]:checked + .withdraw-btn { border-color: #dc3545; background-color: #f8d7da; color: #dc3545; }
+body.dark-mode .custom-radio-group input[value="withdraw"]:checked + .withdraw-btn { background-color: rgba(220, 53, 69, 0.2); border-color: #dc3545; color: #ff6b7a; }
+
+.pill-input { width: 100%; padding: 12px 20px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); border-radius: 50px; box-sizing: border-box; font-size: 15px; transition: all 0.2s; }
+.pill-input:focus { outline: none; border-color: #007bff; box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=number] { -moz-appearance: textfield; }
+
+.modal-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 25px; }
+.cancel-btn, .confirm-btn, .danger-btn { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+.pill-btn-action { border-radius: 50px; }
+.cancel-btn { background-color: var(--btn-bg); color: var(--text-color); }
+.confirm-btn { background-color: #007bff; color: white; }
+.danger-btn { background-color: #dc3545; color: white; }
+.detail-box p { margin: 8px 0; font-size: 15px; border-bottom: 1px dashed var(--border-color); padding-bottom: 8px;}
+.detail-box span.label { font-weight: bold; color: var(--text-muted); display: inline-block; width: 90px; }
+.detail-box span.value { color: var(--text-color); font-weight: 500;}
+
+/* ไอคอน Success */
+.success-icon {
+    width: 60px; height: 60px; border-radius: 50%; background-color: rgba(40, 167, 69, 0.15);
+    color: #28a745; font-size: 30px; font-weight: bold; display: flex; justify-content: center; align-items: center;
+    margin: 0 auto; border: 3px solid #28a745;
+}
+
+/* ปฏิทิน และ Dropdown */
+.calendar-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: transparent; padding: 5px 0;}
+.cal-nav-btn { background: var(--input-bg); color: #007bff; border: 2px solid var(--border-color); border-radius: 12px; width: 40px; height: 40px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px var(--shadow-color); transition: 0.2s; }
+.cal-nav-btn:hover { background: #007bff; color: white; border-color: #007bff; transform: translateY(-2px); }
+
+.custom-select-wrapper { position: relative; user-select: none; width: 115px; }
+.custom-select-trigger { background: var(--input-bg); color: var(--text-color); border: 2px solid var(--border-color); padding: 10px 15px; border-radius: 12px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px var(--shadow-color); transition: 0.2s; }
+.custom-select-trigger:hover { border-color: #007bff; }
+.arrow { font-size: 10px; color: #007bff; transition: 0.2s; }
+.custom-select-wrapper.open .arrow { transform: rotate(180deg); }
+.custom-select-wrapper.open .custom-select-trigger { border-color: #007bff; }
+
+.custom-options { position: absolute; top: 120%; left: 0; right: 0; background: var(--box-bg); border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.15); border: 1px solid var(--border-color); overflow: hidden; max-height: 250px; overflow-y: auto; display: none; z-index: 999; }
+.custom-select-wrapper.open .custom-options { display: block; animation: fadeInDown 0.2s ease; }
+.custom-option { padding: 12px 15px; font-size: 14px; color: var(--text-color); cursor: pointer; transition: 0.2s; border-bottom: 1px solid var(--border-color); }
+.custom-option:last-child { border-bottom: none; }
+.custom-option:hover { background: #007bff; color: white; }
+.custom-option.selected { background: #e6f2ff; color: #007bff; font-weight: bold; }
+body.dark-mode .custom-option.selected { background: #333; color: #4da3ff; }
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+.calendar-wrapper { background: var(--card-bg); padding: 15px; border-radius: 15px; border: 1px solid var(--border-color); }
+.calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: bold; font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.calendar-day { aspect-ratio: 1/1; display: flex; justify-content: center; align-items: center; font-size: 14px; color: var(--text-color); background: var(--box-bg); border-radius: 8px; cursor: pointer; border: 1px solid var(--border-color); transition: 0.2s; }
+.calendar-day:hover { background: #007bff; color: white; border-color: #007bff; }
+.calendar-day.empty { background: transparent; border: none; cursor: default; }
+.calendar-day.today { background: #e6f2ff; border: 2px solid #007bff; color: #007bff; font-weight: bold; }
+body.dark-mode .calendar-day.today { background: rgba(0, 123, 255, 0.2); }
+
+/* สีปฏิทินเมื่อมีการเทรด */
+.calendar-day.has-trade { flex-direction: column; justify-content: space-evenly; border: 2px solid transparent; }
+.calendar-day.trade-win { background-color: rgba(40, 167, 69, 0.15); border-color: #28a745; }
+.calendar-day.trade-loss { background-color: rgba(220, 53, 69, 0.15); border-color: #dc3545; }
+body.dark-mode .calendar-day.trade-win { background-color: rgba(40, 167, 69, 0.25); }
+body.dark-mode .calendar-day.trade-loss { background-color: rgba(220, 53, 69, 0.25); }
+.trade-percent-label { font-size: 10px; font-weight: bold; padding: 1px 4px; border-radius: 4px; white-space: nowrap; }
+.trade-win .trade-percent-label { color: #28a745; }
+.trade-loss .trade-percent-label { color: #dc3545; }
+
+/* ปุ่มลอย (FAB) และ หน้าบันทึกเทรด */
+.fab-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background-color: #007bff; color: white; border: none; padding: 15px 30px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 10px 25px rgba(0, 123, 255, 0.4); cursor: pointer; z-index: 100; transition: 0.2s; }
+.fab-btn:hover { background-color: #0056b3; transform: translateX(-50%) translateY(-3px); }
+.fab-add-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(130px); width: 60px; height: 60px; border-radius: 50%; background-color: #007bff; color: white; font-size: 36px; font-weight: normal; border: none; box-shadow: 0 5px 20px rgba(0, 123, 255, 0.4); cursor: pointer; z-index: 101; display: flex; justify-content: center; align-items: center; padding-bottom: 4px; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.fab-add-btn:hover { transform: translateX(130px) scale(1.1); background-color: #0056b3; box-shadow: 0 8px 25px rgba(0, 123, 255, 0.5); }
+.fab-next-btn { position: fixed; bottom: 30px; left: 50%; transform: translateX(90px); background-color: #28a745; color: white; border: none; padding: 15px 25px; border-radius: 30px; font-size: 16px; font-weight: bold; box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4); cursor: pointer; z-index: 101; transition: 0.2s; }
+.fab-next-btn:hover { background-color: #218838; transform: translateX(90px) translateY(-3px); box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5); }
+.back-btn { background: none; border: none; color: #007bff; font-size: 15px; font-weight: bold; cursor: pointer; padding: 0; margin-bottom: 10px; display: flex; align-items: center; transition: 0.2s; }
+.back-btn:hover { color: #0056b3; transform: translateX(-3px); }
+.pl-input-highlight { border: 2px solid #007bff !important; font-weight: bold; color: #007bff !important; }
+body.dark-mode .pl-input-highlight { color: #4da3ff !important; }
+
+/* อัปโหลดรูปภาพ */
+.image-upload-box { display: flex; justify-content: center; align-items: center; width: 100%; height: 180px; background-color: var(--card-bg); border: 2px dashed var(--border-color); border-radius: 20px; cursor: pointer; background-size: cover; background-position: center; background-repeat: no-repeat; color: var(--text-muted); font-size: 14px; font-weight: bold; transition: all 0.2s; }
+.image-upload-box:hover { border-color: #007bff; background-color: rgba(0, 123, 255, 0.05); }
+.pill-textarea { width: 100%; padding: 15px 20px; border: 1px solid var(--border-color); background-color: var(--input-bg); color: var(--text-color); border-radius: 25px; box-sizing: border-box; font-size: 14px; font-family: inherit; resize: none; transition: all 0.2s; line-height: 1.5; }
+.pill-textarea:focus { outline: none; border-color: #007bff; box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15); }
+.risk-input::-webkit-inner-spin-button, .risk-input::-webkit-outer-spin-button { -webkit-appearance: auto !important; margin: auto !important; opacity: 1 !important; }
+.risk-input { -moz-appearance: number-input !important; text-align: center; padding: 12px 10px; }
+
+/* Carousel (สไลด์รูป) */
+.carousel-container { position: relative; width: 100%; height: 220px; border-radius: 20px; overflow: hidden; background-color: var(--card-bg); border: 2px dashed var(--border-color); margin-bottom: 15px; transition: 0.3s; }
+.carousel-container.has-images { border: 2px solid var(--border-color); background-color: #000; }
+.carousel-wrapper { display: flex; width: 100%; height: 100%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; scroll-behavior: smooth; }
+.carousel-wrapper::-webkit-scrollbar { display: none; } 
+.carousel-slide { flex: 0 0 100%; height: 100%; scroll-snap-align: center; display: flex; justify-content: center; align-items: center; }
+.carousel-slide img { width: 100%; height: 100%; object-fit: cover; transition: object-fit 0.3s ease; }
+.carousel-slide img.contain-mode { object-fit: contain; }
+.carousel-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; z-index: 10; font-size: 14px; }
+.carousel-nav:hover { background: rgba(0,0,0,0.8); }
+.carousel-nav.prev { left: 10px; } .carousel-nav.next { right: 10px; }
+.carousel-dots { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; transition: 0.2s; }
+.dot.active { background: white; transform: scale(1.2); }
+.zoom-btn { position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 35px; height: 35px; font-size: 16px; cursor: pointer; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+.add-more-img-btn { position: absolute; top: 15px; left: 15px; background: #007bff; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; cursor: pointer; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+/* ========================================= */
+/* --- ดีไซน์หน้ารวมออเดอร์รายวัน (Daily Log) --- */
+/* ========================================= */
+
+.trade-record-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    box-shadow: 0 4px 10px var(--shadow-color);
+}
+
+.trade-record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.trade-record-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* ปุ่มลบในการ์ดออเดอร์ */
+.delete-card-btn {
+    background: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.delete-card-btn:hover {
+    background: #dc3545;
+    color: white;
+}
+
+/* กล่องเลื่อนดูรูปภาพในประวัติ */
+.trade-img-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-top: 5px;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+}
+.trade-img-row::-webkit-scrollbar { height: 5px; }
+.trade-img-row::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px; }
+
+.trade-preview-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    cursor: zoom-in;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    transition: 0.2s;
+}
+.trade-preview-img:hover {
+    transform: scale(1.05);
+    border-color: #007bff;
+}
+
+.section-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+/* ========================================= */
+/* --- ระบบแสดงรูปภาพในประวัติ และ ดูเต็มจอ --- */
+/* ========================================= */
+
+/* แถวสำหรับเรียงรูปภาพแนวนอน */
+.trade-img-row {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin-top: 10px;
+    padding-bottom: 5px;
+}
+.trade-img-row::-webkit-scrollbar { height: 5px; }
+.trade-img-row::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px; }
+
+/* รูปภาพขนาดเล็ก (Thumbnail) */
+.trade-preview-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    cursor: zoom-in;
+    flex-shrink: 0;
+    transition: 0.2s;
+}
+.trade-preview-img:hover {
+    transform: scale(1.05);
+    border-color: #007bff;
+}
+
+/* ปุ่มกากบาท (X) สำหรับปิดรูปเต็มจอ */
+.close-img-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: white;
+    font-size: 35px;
+    cursor: pointer;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1;
+    transition: 0.2s;
+    z-index: 10000;
+}
+.close-img-btn:hover {
+    background: rgba(220, 53, 69, 0.9); /* สีแดงตอนเอาเมาส์ชี้ */
+}
