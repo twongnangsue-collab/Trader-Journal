@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trading Journal</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -21,6 +22,7 @@
             </div>
             <button id="openModalBtn" class="edit-btn">⚙️ จัดการเงินทุน (Deposit / Withdraw)</button>
         </div>
+        
         <div class="recent-section">
             <div class="section-header">
                 <h3 class="section-title" style="margin: 0;">ประวัติการทำรายการล่าสุด</h3>
@@ -51,6 +53,18 @@
             <div id="calendarGrid" class="calendar-grid"></div>
         </div>
     </div>
+
+    <div id="overviewPage" style="display: none;">
+        <h2 class="page-title">ภาพรวมสถิติ</h2>
+        
+        <div class="chart-section" style="margin: 0 20px 20px 20px; background: #ffffff; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 14px; color: #475569;">
+                📈 การเติบโตของพอร์ต (เดือนนี้)
+            </h3>
+            <canvas id="equityChart" height="200"></canvas>
+        </div>
+        
+        <div style="height: 80px;"></div> </div>
 
     <div id="addTradePage" style="display: none;">
         <button id="backFromTradeBtn" class="back-btn">← ย้อนกลับ</button>
@@ -139,12 +153,12 @@
         <button id="backToStep3Btn" class="back-btn">← ย้อนกลับ</button>
         <h3 style="color: var(--text-color); margin-top: 5px; margin-bottom: 15px; font-size: 18px; text-align: center;">สรุปผลตอบแทน (P/L)</h3>
         
-        <label class="modal-label" style="text-align: center;">สกุลเงิน</label>
+        <label class="modal-label">สกุลเงิน</label>
         <div class="custom-radio-group">
-            <input type="radio" id="tradeCurrUSD" name="tradeCurrency" value="USD" checked>
-            <label for="tradeCurrUSD" class="pill-btn">🇺🇸 USD</label>
-            <input type="radio" id="tradeCurrUSC" name="tradeCurrency" value="USC">
-            <label for="tradeCurrUSC" class="pill-btn">🪙 USC</label>
+            <input type="radio" id="currUSD" name="txCurrency" value="USD" checked>
+            <label for="currUSD" class="pill-btn">USD</label>
+            <input type="radio" id="currUSC" name="txCurrency" value="USC">
+            <label for="currUSC" class="pill-btn">USC</label>
         </div>
 
         <label class="modal-label" style="text-align: center; margin-top: 25px;">ผลการทำรายการ</label>
@@ -161,41 +175,101 @@
         <div style="height: 80px;"></div>
     </div>
 
-</div> <button id="pageToggleBtn" class="fab-btn">📅 ปฏิทิน</button>
+</div>
+<button id="overviewToggleBtn" class="fab-overview-btn" onclick="toggleOverviewPage()">ภาพรวม</button>
+
+<script>
+    function toggleOverviewPage() {
+        const overviewPage = document.getElementById('overviewPage');
+        const homePage = document.getElementById('homePage');
+        const calendarPage = document.getElementById('calendarPage');
+        const overviewBtn = document.getElementById('overviewToggleBtn');
+        const calBtn = document.getElementById('pageToggleBtn');
+
+        if (!overviewPage) {
+            alert("⚠️ ยังไม่มีกล่อง id='overviewPage' ในหน้าเว็บครับ");
+            return;
+        }
+
+        if (overviewPage.style.display === 'none' || overviewPage.style.display === '') {
+            // 1. ซ่อนหน้าอื่น เปิดหน้าภาพรวม
+            if (homePage) homePage.style.display = 'none';
+            if (calendarPage) calendarPage.style.display = 'none';
+            overviewPage.style.display = 'block';
+            
+            // 2. เปลี่ยนข้อความปุ่ม
+            overviewBtn.innerHTML = '🏠 หน้าหลัก';
+            if (calBtn) calBtn.innerHTML = '📅 ปฏิทิน';
+
+            // 🎯 3. สั่งวาดกราฟทันที! (ดีเลย์ 50ms ให้กล่องมันกางให้เสร็จก่อนวาด)
+            setTimeout(() => {
+                if (window.renderEquityChart) {
+                    window.renderEquityChart();
+                }
+            }, 50);
+
+        } else {
+            // ปิดหน้าภาพรวม กลับหน้าหลัก
+            overviewPage.style.display = 'none';
+            if (homePage) homePage.style.display = 'block';
+            
+            overviewBtn.innerHTML = 'ภาพรวม';
+        }
+    }
+
+    // ช่วยดักจับ: ถ้ากดปุ่ม "ปฏิทิน" ให้รีเซ็ตปุ่มภาพรวมด้วย
+    document.addEventListener("DOMContentLoaded", function() {
+        const calBtn = document.getElementById('pageToggleBtn');
+        if (calBtn) {
+            calBtn.addEventListener('click', function() {
+                const overviewPage = document.getElementById('overviewPage');
+                const overviewBtn = document.getElementById('overviewToggleBtn');
+                if (overviewPage) overviewPage.style.display = 'none';
+                if (overviewBtn) overviewBtn.innerHTML = 'ภาพรวม';
+            });
+        }
+    });
+</script>
+<button id="pageToggleBtn" class="fab-btn">📅 ปฏิทิน</button>
 <button id="addTradeFabBtn" class="fab-add-btn">+</button>
 <button id="nextStepFabBtn" class="fab-next-btn" style="display: none;">ถัดไป ➔</button>
 <button id="nextStep2FabBtn" class="fab-next-btn" style="display: none;">ถัดไป ➔</button>
 <button id="nextStep3FabBtn" class="fab-next-btn" style="display: none;">ถัดไป ➔</button>
 <button id="saveTradeFabBtn" class="fab-next-btn" style="display: none; background-color: #ff9800; box-shadow: 0 5px 20px rgba(255, 152, 0, 0.4);">💾 บันทึกข้อมูล</button>
 
+
 <div id="txModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3 style="margin-top: 0; text-align: center; color: var(--text-color);">จัดการเงินทุน</h3>
-        <label class="modal-label">ประเภทรายการ</label>
-        <div class="custom-radio-group">
-            <input type="radio" id="typeDeposit" name="txType" value="deposit" checked>
-            <label for="typeDeposit" class="pill-btn deposit-btn">🟢 ฝากเงิน</label>
-            <input type="radio" id="typeWithdraw" name="txType" value="withdraw">
-            <label for="typeWithdraw" class="pill-btn withdraw-btn">🔴 ถอนเงิน</label>
+    <div class="modal-content" style="border-radius: 20px; padding: 25px;">
+        <h3 style="margin-top: 0; text-align: center; color: var(--text-color); font-size: 20px; margin-bottom: 20px;">⚙️ จัดการเงินทุน</h3>
+        
+        <label class="modal-label" style="font-size: 13px;">📅 วันที่ทำรายการ</label>
+        <input type="date" id="txDate" class="pill-input" style="margin-bottom: 15px;">
+
+        <label class="modal-label" style="font-size: 13px;">ประเภทรายการ</label>
+        <div class="custom-radio-group" style="margin-bottom: 15px;">
+            <input type="radio" id="txTypeDep" name="txTypeNew" value="deposit" checked>
+            <label for="txTypeDep" class="pill-btn deposit-btn" style="flex:1; text-align:center;">🟢 ฝากเงิน</label>
+            <input type="radio" id="txTypeWith" name="txTypeNew" value="withdraw">
+            <label for="txTypeWith" class="pill-btn withdraw-btn" style="flex:1; text-align:center;">🔴 ถอนเงิน</label>
         </div>
         
-        <label class="modal-label">สกุลเงิน</label>
-        <div class="custom-radio-group">
-            <input type="radio" id="currUSD" name="txCurrency" value="USD" checked>
-            <label for="currUSD" class="pill-btn">🇺🇸 USD</label>
-            <input type="radio" id="currUSC" name="txCurrency" value="USC">
-            <label for="currUSC" class="pill-btn">🪙 USC</label>
+        <label class="modal-label" style="font-size: 13px;">สกุลเงิน</label>
+        <div class="custom-radio-group" style="margin-bottom: 15px;">
+            <input type="radio" id="txCurrUSD" name="txCurrNew" value="USD" checked>
+            <label for="txCurrUSD" class="pill-btn" style="flex:1; text-align:center;">USD</label>
+            <input type="radio" id="txCurrUSC" name="txCurrNew" value="USC">
+            <label for="txCurrUSC" class="pill-btn" style="flex:1; text-align:center;">USC</label>
         </div>
         
-        <label class="modal-label">จำนวนเงิน</label>
-        <input type="number" id="txAmount" class="pill-input" placeholder="ระบุจำนวนเงิน" step="0.01">
+        <label class="modal-label" style="font-size: 13px;">จำนวนเงิน</label>
+        <input type="number" id="txAmount" class="pill-input" placeholder="0.00" step="0.01" style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">
         
-        <label class="modal-label">หมายเหตุ</label>
-        <input type="text" id="txNote" class="pill-input" placeholder="ระบุหมายเหตุการทำรายการ">
+        <label class="modal-label" style="font-size: 13px;">หมายเหตุ</label>
+        <input type="text" id="txNote" class="pill-input" placeholder="ระบุเหตุผล (เช่น เติมพอร์ตประจำเดือน)" style="margin-bottom: 25px;">
         
         <div class="modal-actions">
-            <button id="cancelModalBtn" class="cancel-btn pill-btn-action">ยกเลิก</button>
-            <button id="confirmTxBtn" class="confirm-btn pill-btn-action">บันทึกรายการ</button>
+            <button id="cancelModalBtn" class="cancel-btn pill-btn-action" style="flex: 1; border-radius: 12px;">ยกเลิก</button>
+            <button id="confirmTxBtn" class="confirm-btn pill-btn-action" style="flex: 1.5; border-radius: 12px; background: #3b82f6;">บันทึกรายการ</button>
         </div>
     </div>
 </div>
@@ -260,6 +334,8 @@
     <img id="fullScreenImage" src="" style="max-width: 95%; max-height: 85vh; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
 </div>
 
-<script src="script.js?v=2"></script>
+<script type="module" src="js/firebase-config.js"></script>
+<script type="module" src="js/ui.js"></script>
+<script type="module" src="js/app.js"></script>
 </body>
 </html>

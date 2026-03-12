@@ -311,3 +311,220 @@ body.dark-mode .pl-input-highlight { color: #4da3ff !important; }
 .close-img-btn:hover {
     background: rgba(220, 53, 69, 0.9); /* สีแดงตอนเอาเมาส์ชี้ */
 }
+/* ปุ่มลบรูปภาพในหน้าพรีวิวตอนเพิ่มออเดอร์ (ปรับค่า right เพื่อไม่ให้ซ้อนกับปุ่มซูม) */
+.delete-slide-btn {
+    position: absolute;
+    top: 8px; /* รักษาความสูงไว้ที่ 8px เหมือนเดิม */
+    right: 60px; /* <--- ขยับมาทางซ้ายเป็น 41px เพื่ออยู่ข้างๆ ปุ่มซูม */
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    transition: 0.2s;
+}
+.delete-slide-btn:hover {
+    background: #c82333;
+    transform: scale(1.1);
+}
+/* ล็อคปุ่มบันทึกออเดอร์ให้อยู่กึ่งกลางเสมอ */
+#saveTradeFabBtn {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    text-align: center;
+    width: 80% !important;
+    max-width: 300px;
+    white-space: nowrap;
+}
+/* =========================================
+   จัดระเบียบหน้าต่าง View Day Modal ใหม่
+   ========================================= */
+#viewDayModal .modal-content {
+    padding: 20px;
+}
+/* จัดให้ปุ่มเพิ่มออเดอร์อยู่ข้างๆ วันที่พอดีเป๊ะ */
+#viewDayModal h3 {
+    margin: 0;
+    font-size: 18px;
+    display: inline-block;
+}
+#addTradeFromDayBtn {
+    margin: 0 0 0 10px !important;
+    display: inline-block;
+    width: auto !important;
+    padding: 8px 16px;
+    font-size: 13px;
+}
+
+/* ดีไซน์การ์ดออเดอร์แบบใหม่ */
+.trade-record-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+.trade-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #cbd5e1;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+.trade-card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.trade-symbol {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+.trade-result-badge {
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.trade-result-badge.win { background: #dcfce7; color: #166534; }
+.trade-result-badge.loss { background: #fee2e2; color: #991b1b; }
+
+/* ปุ่มลบแบบมินิมอล */
+.delete-card-btn {
+    background: #ffe4e6;
+    color: #e11d48;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.delete-card-btn:hover { background: #fecdd3; }
+
+/* จัดเรียงข้อมูลออเดอร์เป็น 2 คอลัมน์ */
+.trade-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.info-item {
+    display: flex;
+    flex-direction: column;
+}
+.info-label {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+.info-value {
+    font-size: 14px;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* กล่องสรุปเหตุผลและอารมณ์ */
+.trade-notes-box {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+.trade-notes-box.plan-yes { border-left: 4px solid #10b981; }
+.trade-notes-box.plan-no { border-left: 4px solid #ef4444; background: #fef2f2; }
+
+.note-row { margin-bottom: 8px; }
+.note-row:last-child { margin-bottom: 0; }
+.note-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #475569;
+    display: block;
+}
+.note-text {
+    font-size: 13px;
+    color: #334155;
+    display: block;
+    margin-top: 2px;
+    line-height: 1.5;
+}
+/* ปุ่มภาพรวมมุมซ้ายล่าง */
+.fab-overview-btn {
+    position: fixed;
+    bottom: 25px;
+    left: calc(50% - 190px);
+    background-color: #64748b;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 12px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 100; /* ลดระดับลงมาเพื่อไม่ให้ทับ Modal */
+    transition: 0.3s;
+}
+.fab-overview-btn:hover {
+    background-color: #475569;
+    transform: translateY(-2px);
+}
+
+/* บังคับให้หน้าต่างทุกอัน (Modal) เด้งมาอยู่หน้าสุดเสมอ */
+.modal-overlay {
+    z-index: 9999 !important; 
+}
+/* =========================================
+   อัปเกรดโครงสร้างปฏิทิน (แก้บั๊กกล่องเบี้ยว/ดันกัน)
+   ========================================= */
+.calendar-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important; /* บังคับ 7 ช่องเท่ากันเป๊ะ */
+    gap: 6px; /* ระยะห่างระหว่างกล่อง */
+    width: 100%;
+}
+
+.calendar-day {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-start; /* ดันตัวเลขวันที่ไปด้านบน */
+    align-items: center;
+    min-height: 65px; /* ล็อกความสูงขั้นต่ำไว้ กล่องจะได้เท่ากันหมด */
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 5px 2px;
+    box-sizing: border-box;
+    overflow: hidden; /* ถ้าข้อความยาวล้น ให้ตัดซ่อนไว้ไม่ให้ดันกล่องแตก */
+}
+
+/* ช่องที่ว่างเปล่า (ไม่มีวันที่) */
+.calendar-day.empty {
+    min-height: 65px;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* ข้อความรายละเอียดในกล่อง (ฝาก/ถอน, ออเดอร์) */
+.trade-percent-label {
+    margin-top: auto; /* ดันข้อความลงไปชิดขอบล่างของกล่อง */
+    font-size: 9px !important;
+    line-height: 1.2 !important;
+    text-align: center;
+    width: 100%;
+    word-break: break-word; /* ถ้ายาวไปให้ขึ้นบรรทัดใหม่ */
+}
