@@ -3,40 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading Journal</title>
+    <title>DATTER</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/pickr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<div class="app-container">
-    <button id="themeToggleBtn" class="theme-toggle-btn absolute-top-right">🌙</button>
+    <nav class="top-navbar">
+        <img src="logo-datter white Transparent .png" alt="DATTER Logo" class="brand-logo" onclick="switchPage('homePage');" style="cursor: pointer;" title="กลับหน้าหลัก">
+        
+        <div class="nav-links" style="display: flex; gap: 20px; align-items: center;">
+            <a href="#" onclick="switchPage('homePage'); return false;" id="navHome" style="color: var(--accent-color); text-decoration: none; font-weight: bold; transition: 0.3s;">Home</a>
+            <a href="#" onclick="switchPage('overviewPage'); return false;" id="navOverview" style="color: var(--text-main); text-decoration: none; font-weight: bold; transition: 0.3s;">Overview</a>
+            <a href="#" onclick="switchPage('calendarPage'); return false;" id="navCalendar" style="color: var(--text-main); text-decoration: none; font-weight: bold; transition: 0.3s;">Calendar</a>
+            
+            <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.2); margin: 0 10px;"></div>
+            
+            <button onclick="document.getElementById('openModalBtn').click()" style="background: transparent; border: 1px solid var(--text-main); color: var(--text-main); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s;">
+                ⚙️ จัดการเงินทุน
+            </button>
+            <button onclick="document.getElementById('addTradeFabBtn').click()" style="background: var(--accent-color); color: var(--btn-text-color, #ffffff); border: none; padding: 8px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; box-shadow: 0 0 15px var(--accent-glow);">
+                + เพิ่มออเดอร์
+            </button>
+            
+
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <div id="themePickerBtn"></div>
+            </div>
+            
+            <button onclick="document.getElementById('profileSettingsModal').style.display='flex'" style="background: transparent; border: none; font-size: 20px; cursor: pointer; transition: 0.3s; margin-left: 5px; opacity: 0.8;" title="ตั้งค่าโปรไฟล์" onmouseover="this.style.opacity='1'; this.style.transform='rotate(45deg)'" onmouseout="this.style.opacity='0.8'; this.style.transform='rotate(0deg)'">
+                ⚙️
+            </button>
+        </div>
+    </nav>
 
     <div id="homePage">
-        <button id="toggleCurrencyBtn" class="currency-toggle-btn absolute-top-left">🔄 แสดงเป็น Cent</button>
-        <h2 class="page-title">พอร์ตลงทุน</h2>
-        <div class="balance-section">
-            <div class="balance-circle">
-                <div class="balance-label">ยอดเงินคงเหลือ</div>
-                <div class="balance-amount"><span id="currencySymbol">$</span><span id="balanceValue">0.00</span></div>
-            </div>
-            <button id="openModalBtn" class="edit-btn">⚙️ จัดการเงินทุน (Deposit / Withdraw)</button>
-        </div>
-        
-        <div class="recent-section">
-            <div class="section-header">
-                <h3 class="section-title" style="margin: 0;">ประวัติการทำรายการล่าสุด</h3>
-                <button id="deleteAllBtn" class="delete-all-btn">🗑️ ล้างข้อมูลทั้งหมด</button>
-            </div>
-            <div id="transactionList"></div>
-        </div>
+        <main class="portfolio-container">
+            <section class="hero-section" style="min-height: 50vh;">
+                <div class="hero-text-box">
+                    <div class="glass-panel" style="margin-top: 0;">
+                        <h2 style="color: var(--accent-color); font-size: 24px; margin-top: 0; margin-bottom: 0;">Trading Journal</h2>
+                        <h1 id="heroNameText" style="font-size: 64px; margin: 10px 0; line-height: 1.1;">Teerawut <br>Wongnangsue</h1>
+                        <h3 id="heroRoleText" style="color: var(--text-muted); font-size: 20px; font-weight: 400; margin-bottom: 25px;">
+                            Smart Money Concept Trader & Developer
+                        </h3>
+                        <p id="heroBioText" style="color: var(--text-muted); max-width: 500px; line-height: 1.6; margin-bottom: 0;">
+                            ยินดีต้อนรับสู่ Trading Portfolio ของผม พื้นที่สำหรับบันทึกการเติบโต วิเคราะห์ความผิดพลาด และพัฒนาระบบเทรดอย่างเป็นระบบ
+                        </p>
+                    </div>
+
+                    <div class="glass-panel" style="margin-top: 10px; width: fit-content; padding: 25px 35px !important;">
+                        <div style="display: flex; align-items: flex-end; gap: 20px; flex-wrap: wrap;">
+                            <div>
+                                <div style="font-size: 14px; color: #ffffff; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    Current Balance 
+                                    <button id="toggleCurrencyBtn" style="background: rgba(255,255,255,0.1); border:none; color:var(--text-main); cursor:pointer; font-size:12px; padding: 4px 10px; border-radius: 4px; margin-left: 15px; transition: 0.3s;">
+                                        เปลี่ยนสกุลเงิน
+                                    </button>
+                                </div>
+                                <div style="font-size: 56px; font-weight: bold; color: #ffffff; line-height: 1.1;">
+                                    <span id="currencySymbol">$</span><span id="balanceValue">0.00</span>
+                                </div>
+                            </div>
+                            <button id="openModalBtn" style="display: none;"></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="hero-image-box">
+                    <div class="profile-orbit-container">
+                        <img id="heroProfileImg" src="https://i.pravatar.cc/500?img=11" alt="Profile" class="profile-glow-img">
+                        <div class="orbit-ball ball-1" id="orbit-1"></div>
+                        <div class="orbit-ball ball-2" id="orbit-2"></div>
+                        <div class="orbit-ball ball-3" id="orbit-3"></div>
+                        <div class="orbit-ball ball-4" id="orbit-4"></div>
+                        <div class="orbit-ball ball-5" id="orbit-5"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="history" style="margin-top: 60px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 10px; margin-bottom: 20px;">
+                    <h2 style="font-size: 28px; margin: 0; color: var(--text-main);">Trading History</h2>
+                    <button id="deleteAllBtn" style="background: none; border: none; color: #ef4444; cursor: pointer;">🗑 ล้างข้อมูลทั้งหมด</button>
+                </div>
+                <div id="transactionList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 15px;"></div>
+            </section>
+        </main>
     </div>
 
-    <div id="calendarPage" style="display: none;">
-        <h2 class="page-title">ปฏิทินการเทรด</h2>
-        <div class="calendar-controls">
-            <button id="prevMonthBtn" class="cal-nav-btn">&lt;</button>
-            <div style="display: flex; gap: 10px;">
+    <div id="calendarPage" style="display: none;" class="portfolio-container">
+        <div style="max-width: 900px; margin: 0 auto; padding-top: 20px;">
+            <h2 class="page-title" style="margin-top: 20px; text-align: center; color: var(--text-main); font-size: 32px;">ปฏิทินการเทรด</h2>
+            <div class="calendar-controls" style="display: flex; justify-content: center; align-items: center; gap: 15px; margin-bottom: 30px;">
+                <button id="prevMonthBtn" class="cal-nav-btn">&lt;</button>
                 <div class="custom-select-wrapper" id="monthWrapper">
                     <div class="custom-select-trigger"><span id="monthText">มกราคม</span> <span class="arrow">▼</span></div>
                     <div class="custom-options" id="monthOptionsList"></div>
@@ -45,79 +111,143 @@
                     <div class="custom-select-trigger"><span id="yearText">2026</span> <span class="arrow">▼</span></div>
                     <div class="custom-options" id="yearOptionsList"></div>
                 </div>
+                <button id="nextMonthBtn" class="cal-nav-btn">&gt;</button>
             </div>
-            <button id="nextMonthBtn" class="cal-nav-btn">&gt;</button>
-        </div>
-        <div class="calendar-wrapper">
-            <div class="calendar-weekdays"><div>อา</div><div>จ</div><div>อ</div><div>พ</div><div>พฤ</div><div>ศ</div><div>ส</div></div>
-            <div id="calendarGrid" class="calendar-grid"></div>
+            <div class="calendar-wrapper" style="background: var(--surface-color); border-radius: 20px; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.5);">
+                <div class="calendar-weekdays" style="color: var(--text-muted); font-size: 16px; margin-bottom: 15px;"><div>อา</div><div>จ</div><div>อ</div><div>พ</div><div>พฤ</div><div>ศ</div><div>ส</div></div>
+                <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
         </div>
     </div>
 
-    <div id="overviewPage" style="display: none;">
-        <h2 class="page-title">ภาพรวมสถิติ</h2>
-        
-        <div class="chart-section" style="margin: 0 20px 20px 20px; background: #ffffff; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <h3 style="margin-top: 0; margin-bottom: 10px; font-size: 14px; color: #475569;">
-                📈 การเติบโตของพอร์ต (เดือนนี้)
-            </h3>
-            <canvas id="equityChart" height="200"></canvas>
+    <div id="overviewPage" style="display: none;" class="portfolio-container">
+        <h2 class="page-title" style="margin-top: 40px; text-align: center; color: var(--text-main);">ภาพรวมสถิติ</h2>
+        <div class="chart-section" style="margin: 0 auto 20px auto; background: var(--surface-color); border-radius: 20px; padding: 30px; max-width: 900px; box-shadow: 0 15px 40px rgba(0,0,0,0.5);">
+            <h3 style="margin-top: 0; margin-bottom: 20px; font-size: 18px; color: var(--text-main);">📈 การเติบโตของพอร์ต (เดือนนี้)</h3>
+            <canvas id="equityChart" height="250"></canvas>
         </div>
-        
-        <div style="height: 80px;"></div> </div>
-
-    <div id="addTradePage" style="display: none;">
-        <button id="backFromTradeBtn" class="back-btn">← ย้อนกลับ</button>
-        <h2 class="page-title" style="margin-top: 10px;">+ บันทึกข้อมูลการเทรด</h2>
-        <form id="tradeFormStep1">
-            <label class="modal-label">วันและเวลาที่เข้าทำรายการ</label>
-            <div style="display: flex; gap: 10px;">
-                <input type="date" id="tradeDate" class="pill-input" required>
-                <input type="time" id="tradeTime" class="pill-input" required>
-            </div>
-            <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <div style="flex: 1;"><label class="modal-label" style="margin-top: 0;">สินทรัพย์ (Symbol)</label><input type="text" id="tradeSymbol" class="pill-input" value="XAUUSD" required></div>
-                <div style="flex: 1.5;"><label class="modal-label" style="margin-top: 0;">ประเภทคำสั่ง (Order Type)</label><select id="tradeOrderType" class="pill-input"><option value="buy">Buy</option><option value="sell">Sell</option><option value="buy_limit">Buy Limit</option><option value="sell_limit">Sell Limit</option><option value="buy_stop">Buy Stop</option><option value="sell_stop">Sell Stop</option></select></div>
-            </div>
-            <div style="height: 80px;"></div>
-        </form>
+        <div style="height: 80px;"></div> 
     </div>
 
-    <div id="addTradeStep2Page" style="display: none;">
-        <button id="backToStep1Btn" class="back-btn">← ย้อนกลับ</button>
-        <h3 style="color: var(--text-color); margin-top: 5px; margin-bottom: 15px; font-size: 18px;">ข้อมูลก่อนเข้าทำรายการ (Before)</h3>
-        <div class="carousel-container" id="beforeCarouselContainer">
-            <input type="file" id="beforeImageInput" accept="image/*" multiple style="display: none;">
-            <div class="carousel-wrapper" id="beforeCarouselWrapper">
-                <label for="beforeImageInput" class="image-upload-box" id="beforeImagePlaceholderBox"><span id="beforeImagePlaceholder">📷 แตะเพื่ออัปโหลดรูปภาพ</span></label>
-            </div>
-            <button type="button" class="carousel-nav prev" id="beforePrevBtn" style="display: none;">&#10094;</button><button type="button" class="carousel-nav next" id="beforeNextBtn" style="display: none;">&#10095;</button>
-            <div class="carousel-dots" id="beforeDotsContainer"></div>
-            <button type="button" class="zoom-btn" id="beforeZoomBtn" style="display: none;" title="ปรับขนาดรูปภาพ">🔍</button>
-            <label for="beforeImageInput" class="add-more-img-btn" id="beforeAddMoreBtn" style="display: none;">+ เพิ่มรูปภาพ</label>
-        </div>
-        <label class="modal-label" style="margin-top: 20px;">เหตุผลและเงื่อนไขในการเข้าเทรด (Entry Reason)</label>
-        <textarea id="tradeReasonStep2" class="pill-textarea" rows="4" placeholder="ระบุเหตุผลในการตัดสินใจเข้าทำรายการ..."></textarea>
-        
-        <label class="modal-label">สภาวะอารมณ์ก่อนเข้าเทรด (Emotional State)</label>
-        <select id="tradeEmotionStep2" class="pill-input">
-            <option value="มั่นใจ ปฏิบัติตามแผน" selected>มั่นใจ ปฏิบัติตามแผน</option>
-            <option value="มีความกังวลหรือลังเล">มีความกังวลหรือลังเล</option>
-            <option value="เกรงว่าจะพลาดโอกาส (FOMO)">เกรงว่าจะพลาดโอกาส (FOMO)</option>
-            <option value="ต้องการกู้คืนผลขาดทุน (Revenge Trading)">ต้องการกู้คืนผลขาดทุน (Revenge Trading)</option>
-        </select>
+    <div id="addTradePage" style="display: none;" class="portfolio-container">
+        <div style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
+            
+            <div class="glass-panel" style="padding: 40px !important;">
+                
+                <button id="backFromTradeBtn" class="back-btn-modern">
+                    <span style="font-size: 18px;">←</span> ย้อนกลับ
+                </button>
 
-        <h4 style="text-align: center; color: var(--text-color); margin-top: 30px; margin-bottom: 15px;">การบริหารความเสี่ยง (Risk Management)</h4>
-        <div style="display: flex; gap: 10px;">
-            <div style="flex: 1;"><label class="modal-label" style="margin-top: 0; text-align: center;">ขนาดสัญญา (Lot)</label><input type="number" id="tradeRiskLot" class="pill-input risk-input" step="0.01"></div>
-            <div style="flex: 1;"><label class="modal-label" style="margin-top: 0; text-align: center;">สัดส่วน RR (1:X)</label><input type="number" id="tradeRiskRR" class="pill-input risk-input" step="0.1"></div>
+                <h2 class="page-title" style="margin-top: 10px; color: var(--text-main); text-align: center; margin-bottom: 30px;">
+                    📝 บันทึกข้อมูลการเทรด
+                </h2>
+
+                <form id="tradeFormStep1">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                        
+                        <div>
+                            <label class="modal-label">📅 วันที่เข้าทำรายการ</label>
+                            <input type="date" id="tradeDate" class="pill-input" required>
+                        </div>
+                        
+                        <div>
+                            <label class="modal-label">⏰ เวลา</label>
+                            <input type="time" id="tradeTime" class="pill-input" required>
+                        </div>
+                        
+                        <div>
+                            <label class="modal-label">🪙 สินทรัพย์ (Symbol)</label>
+                            <input type="text" id="tradeSymbol" class="pill-input" value="XAUUSD" required>
+                        </div>
+                        
+                        <div>
+                            <label class="modal-label">📊 ประเภทคำสั่ง</label>
+                            <select id="tradeOrderType" class="pill-input">
+                                <option value="buy">🟢 Buy (Long)</option>
+                                <option value="sell">🔴 Sell (Short)</option>
+                                <option value="buy_limit">🟢 Buy Limit</option>
+                                <option value="sell_limit">🔴 Sell Limit</option>
+                                <option value="buy_stop">🟢 Buy Stop</option>
+                                <option value="sell_stop">🔴 Sell Stop</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; margin-top: 30px;">
+                        <button type="button" id="nextStepFabBtn" style="background: var(--accent-color); color: var(--btn-text-color, #fff); border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 4px 15px var(--accent-glow); transition: 0.3s;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                            ถัดไป ➔
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div style="height: 80px;"></div>
     </div>
 
-    <div id="addTradeStep3Page" style="display: none;">
+    <div id="addTradeStep2Page" style="display: none;" class="portfolio-container">
+        <div style="max-width: 700px; margin: 40px auto; padding: 0 20px;">
+            <div class="glass-panel" style="padding: 40px !important;">
+                
+                <button id="backToStep1Btn" class="back-btn-modern">
+                    <span style="font-size: 18px;">←</span> ย้อนกลับ
+                </button>
+
+                <h2 class="page-title" style="margin-top: 10px; color: var(--text-main); text-align: center; margin-bottom: 30px;">
+                    📸 ข้อมูลก่อนเข้าเทรด (Before)
+                </h2>
+
+                <div class="carousel-container" id="beforeCarouselContainer" style="margin-bottom: 25px;">
+                    <input type="file" id="beforeImageInput" accept="image/*" multiple style="display: none;">
+                    <div class="carousel-wrapper" id="beforeCarouselWrapper">
+                        <label for="beforeImageInput" class="image-upload-box" id="beforeImagePlaceholderBox">
+                            <span id="beforeImagePlaceholder">📷 แตะเพื่ออัปโหลดรูปภาพ</span>
+                        </label>
+                    </div>
+                    <button type="button" class="carousel-nav prev" id="beforePrevBtn" style="display: none;">&#10094;</button>
+                    <button type="button" class="carousel-nav next" id="beforeNextBtn" style="display: none;">&#10095;</button>
+                    <div class="carousel-dots" id="beforeDotsContainer"></div>
+                    <button type="button" class="zoom-btn" id="beforeZoomBtn" style="display: none;">🔍</button>
+                    <label for="beforeImageInput" class="add-more-img-btn" id="beforeAddMoreBtn" style="display: none;">+ เพิ่มรูปภาพ</label>
+                </div>
+                
+                <label class="modal-label">เหตุผลและเงื่อนไขในการเข้าเทรด</label>
+                <textarea id="tradeReasonStep2" class="pill-textarea" rows="3" placeholder="ระบุเหตุผลในการตัดสินใจ..."></textarea>
+                
+                <label class="modal-label" style="margin-top: 20px;">สภาวะอารมณ์ก่อนเข้าเทรด</label>
+                <select id="tradeEmotionStep2" class="pill-input">
+                    <option value="มั่นใจ ปฏิบัติตามแผน" selected>มั่นใจ ปฏิบัติตามแผน</option>
+                    <option value="มีความกังวลหรือลังเล">มีความกังวลหรือลังเล</option>
+                    <option value="เกรงว่าจะพลาดโอกาส (FOMO)">เกรงว่าจะพลาดโอกาส (FOMO)</option>
+                    <option value="ต้องการกู้คืนผลขาดทุน (Revenge)">ต้องการกู้คืนผลขาดทุน (Revenge)</option>
+                </select>
+
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
+
+                <h4 style="text-align: center; color: var(--text-main); margin-top: 0; margin-bottom: 20px;">การบริหารความเสี่ยง (Risk Management)</h4>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div>
+                        <label class="modal-label" style="text-align: center;">ขนาดสัญญา (Lot)</label>
+                        <input type="number" id="tradeRiskLot" class="pill-input risk-input" step="0.01" style="text-align: center;">
+                    </div>
+                    <div>
+                        <label class="modal-label" style="text-align: center;">สัดส่วน RR (1:X)</label>
+                        <input type="number" id="tradeRiskRR" class="pill-input risk-input" step="0.1" style="text-align: center;">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-top: 40px;">
+                    <button type="button" id="nextStep2FabBtn" style="background: var(--accent-color); color: var(--btn-text-color, #fff); border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-size: 16px; font-weight: bold; box-shadow: 0 4px 15px var(--accent-glow); transition: 0.3s;" onmouseover="this.style.transform='translateX(5px)'" onmouseout="this.style.transform='translateX(0)'">
+                        ถัดไป ➔
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="addTradeStep3Page" style="display: none;" class="portfolio-container" style="max-width: 600px; margin: 0 auto;">
         <button id="backToStep2Btn" class="back-btn">← ย้อนกลับ</button>
-        <h3 style="color: var(--text-color); margin-top: 5px; margin-bottom: 15px; font-size: 18px;">ข้อมูลหลังจบรายการ (After)</h3>
+        <h3 style="color: var(--text-main); margin-top: 5px; margin-bottom: 15px; font-size: 18px;">ข้อมูลหลังจบรายการ (After)</h3>
         <div class="carousel-container" id="afterCarouselContainer">
             <input type="file" id="afterImageInput" accept="image/*" multiple style="display: none;">
             <div class="carousel-wrapper" id="afterCarouselWrapper">
@@ -125,217 +255,278 @@
             </div>
             <button type="button" class="carousel-nav prev" id="afterPrevBtn" style="display: none;">&#10094;</button><button type="button" class="carousel-nav next" id="afterNextBtn" style="display: none;">&#10095;</button>
             <div class="carousel-dots" id="afterDotsContainer"></div>
-            <button type="button" class="zoom-btn" id="afterZoomBtn" style="display: none;" title="ปรับขนาดรูปภาพ">🔍</button>
+            <button type="button" class="zoom-btn" id="afterZoomBtn" style="display: none;">🔍</button>
             <label for="afterImageInput" class="add-more-img-btn" id="afterAddMoreBtn" style="display: none;">+ เพิ่มรูปภาพ</label>
         </div>
-        
-        <h4 style="text-align: center; color: var(--text-color); margin-top: 30px; margin-bottom: 15px;">การประเมินผลและการพัฒนา</h4>
-        
+        <h4 style="text-align: center; color: var(--text-main); margin-top: 30px; margin-bottom: 15px;">การประเมินผลและการพัฒนา</h4>
         <label class="modal-label">1. การปฏิบัติตามแผนการเทรด</label>
         <div class="custom-radio-group">
             <input type="radio" id="planYes" name="followPlan" value="yes" checked><label for="planYes" class="pill-btn deposit-btn" style="font-size: 12px;">✅ เป็นไปตามแผน</label>
             <input type="radio" id="planNo" name="followPlan" value="no"><label for="planNo" class="pill-btn withdraw-btn" style="font-size: 12px;">❌ ไม่เป็นไปตามแผน</label>
         </div>
-        
-        <label class="modal-label" style="margin-top: 15px;">2. ข้อผิดพลาดที่พบ (Mistakes / Errors)</label>
+        <label class="modal-label" style="margin-top: 15px;">2. ข้อผิดพลาดที่พบ</label>
         <textarea id="tradeMistake" class="pill-textarea" rows="3" placeholder="ระบุข้อผิดพลาดเพื่อการศึกษาและพัฒนา..."></textarea>
-        
-        <label class="modal-label">3. แนวทางการแก้ไข (Improvement Plan)</label>
-        <textarea id="tradeImprovement" class="pill-textarea" rows="3" placeholder="ระบุแผนการแก้ไขสำหรับสถานการณ์ที่คล้ายคลึงกันในอนาคต..."></textarea>
-        
+        <label class="modal-label">3. แนวทางการแก้ไข</label>
+        <textarea id="tradeImprovement" class="pill-textarea" rows="3" placeholder="ระบุแผนการแก้ไข..."></textarea>
         <label class="modal-label">สภาวะอารมณ์หลังปิดสถานะ</label>
-        <input type="text" id="tradeEmotionAfter" class="pill-input" placeholder="ระบุสภาวะอารมณ์ที่เกิดขึ้นหลังจบการเทรด...">
-        
+        <input type="text" id="tradeEmotionAfter" class="pill-input" placeholder="ระบุสภาวะอารมณ์ที่เกิดขึ้น...">
         <div style="height: 80px;"></div>
     </div>
 
-    <div id="addTradeStep4Page" style="display: none;">
+    <div id="addTradeStep4Page" style="display: none;" class="portfolio-container" style="max-width: 600px; margin: 0 auto;">
         <button id="backToStep3Btn" class="back-btn">← ย้อนกลับ</button>
-        <h3 style="color: var(--text-color); margin-top: 5px; margin-bottom: 15px; font-size: 18px; text-align: center;">สรุปผลตอบแทน (P/L)</h3>
-        
+        <h3 style="color: var(--text-main); margin-top: 5px; margin-bottom: 15px; font-size: 18px; text-align: center;">สรุปผลตอบแทน (P/L)</h3>
         <label class="modal-label">สกุลเงิน</label>
         <div class="custom-radio-group">
-            <input type="radio" id="currUSD" name="txCurrency" value="USD" checked>
-            <label for="currUSD" class="pill-btn">USD</label>
-            <input type="radio" id="currUSC" name="txCurrency" value="USC">
-            <label for="currUSC" class="pill-btn">USC</label>
+            <input type="radio" id="currUSD_form" name="txCurrencyForm" value="USD" checked><label for="currUSD_form" class="pill-btn">USD</label>
+            <input type="radio" id="currUSC_form" name="txCurrencyForm" value="USC"><label for="currUSC_form" class="pill-btn">USC</label>
         </div>
-
         <label class="modal-label" style="text-align: center; margin-top: 25px;">ผลการทำรายการ</label>
         <div class="custom-radio-group">
-            <input type="radio" id="tradeOutcomeWin" name="tradeOutcome" value="win" checked>
-            <label for="tradeOutcomeWin" class="pill-btn deposit-btn">กำไร (Profit)</label>
-            <input type="radio" id="tradeOutcomeLoss" name="tradeOutcome" value="loss">
-            <label for="tradeOutcomeLoss" class="pill-btn withdraw-btn">ขาดทุน (Loss)</label>
+            <input type="radio" id="tradeOutcomeWin" name="tradeOutcome" value="win" checked><label for="tradeOutcomeWin" class="pill-btn deposit-btn">กำไร (Profit)</label>
+            <input type="radio" id="tradeOutcomeLoss" name="tradeOutcome" value="loss"><label for="tradeOutcomeLoss" class="pill-btn withdraw-btn">ขาดทุน (Loss)</label>
         </div>
-
         <label class="modal-label" style="text-align: center; margin-top: 25px;">จำนวนเงินสุทธิ</label>
-        <input type="number" id="tradeFinalAmount" class="pill-input pl-input-highlight" placeholder="ระบุจำนวนเงิน" step="0.01" style="text-align: center; font-size: 24px;">
-
+        <input type="number" id="tradeFinalAmount" class="pill-input pl-input-highlight" placeholder="0.00" step="0.01" style="text-align: center; font-size: 24px;">
         <div style="height: 80px;"></div>
     </div>
 
-</div>
-<button id="overviewToggleBtn" class="fab-overview-btn" onclick="toggleOverviewPage()">ภาพรวม</button>
+    <div style="display: none !important;">
+        <button id="overviewToggleBtn" class="fab-overview-btn">ภาพรวม</button>
+        <button id="pageToggleBtn" class="fab-btn">ปฏิทิน</button>
+        <button id="addTradeFabBtn" class="fab-add-btn">+</button> 
+        <button id="nextStepFabBtn" class="fab-next-btn">ถัดไป</button>
+        <button id="nextStep2FabBtn" class="fab-next-btn">ถัดไป</button>
+        <button id="nextStep3FabBtn" class="fab-next-btn">ถัดไป</button>
+        <button id="saveTradeFabBtn" class="fab-next-btn">บันทึก</button>
+    </div>
 
-<script>
-    function toggleOverviewPage() {
-        const overviewPage = document.getElementById('overviewPage');
-        const homePage = document.getElementById('homePage');
-        const calendarPage = document.getElementById('calendarPage');
-        const overviewBtn = document.getElementById('overviewToggleBtn');
-        const calBtn = document.getElementById('pageToggleBtn');
+    <div id="profileSettingsModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px; background: var(--box-bg);">
+            <h3 style="margin-top: 0; text-align: center; color: var(--text-main); font-size: 20px; margin-bottom: 25px;">⚙️ ตั้งค่าโปรไฟล์ส่วนตัว</h3>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <label for="profileImageInput" style="cursor: pointer; display: inline-block; position: relative;">
+                    <img id="previewProfileImg" src="https://i.pravatar.cc/500?img=11" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent-color); padding: 3px; background: var(--surface-color);">
+                    <div style="position: absolute; bottom: 0; right: 0; background: var(--accent-color); color: white; border-radius: 50%; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; font-size: 16px; border: 3px solid var(--box-bg); box-shadow: 0 4px 10px rgba(0,0,0,0.5);">📷</div>
+                </label>
+                <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+            </div>
+            <label class="modal-label">ชื่อ - นามสกุล</label>
+            <input type="text" id="editProfileName" class="pill-input">
+            <label class="modal-label">ตำแหน่ง / สไตล์</label>
+            <input type="text" id="editProfileRole" class="pill-input">
+            <label class="modal-label">คำอธิบายตัวเอง</label>
+            <textarea id="editProfileBio" class="pill-textarea" rows="3"></textarea>
+            <div class="modal-actions">
+                <button class="cancel-btn pill-btn-action" style="flex: 1;" onclick="document.getElementById('profileSettingsModal').style.display='none'">ยกเลิก</button>
+                <button id="saveProfileBtn" class="confirm-btn pill-btn-action" style="flex: 1.5; background: var(--accent-color); box-shadow: 0 4px 15px var(--accent-glow);">💾 บันทึก</button>
+            </div>
+        </div>
+    </div>
 
-        if (!overviewPage) {
-            alert("⚠️ ยังไม่มีกล่อง id='overviewPage' ในหน้าเว็บครับ");
-            return;
-        }
+    <div id="txModal" class="modal-overlay">
+        <div class="modal-content" style="border-radius: 20px; padding: 25px; background: var(--box-bg);">
+            <h3 style="margin-top: 0; text-align: center; color: var(--text-main); font-size: 20px; margin-bottom: 20px;">⚙️ จัดการเงินทุน</h3>
+            <label class="modal-label" style="font-size: 13px;">📅 วันที่ทำรายการ</label>
+            <input type="date" id="txDate" class="pill-input" style="margin-bottom: 15px;">
+            <label class="modal-label" style="font-size: 13px;">ประเภทรายการ</label>
+            <div class="custom-radio-group" style="margin-bottom: 15px;">
+                <input type="radio" id="txTypeDep" name="txTypeNew" value="deposit" checked><label for="txTypeDep" class="pill-btn deposit-btn" style="flex:1; text-align:center;">🟢 ฝากเงิน</label>
+                <input type="radio" id="txTypeWith" name="txTypeNew" value="withdraw"><label for="txTypeWith" class="pill-btn withdraw-btn" style="flex:1; text-align:center;">🔴 ถอนเงิน</label>
+            </div>
+            <label class="modal-label" style="font-size: 13px;">สกุลเงิน</label>
+            <div class="custom-radio-group" style="margin-bottom: 15px;">
+                <input type="radio" id="txCurrUSD" name="txCurrNew" value="USD" checked><label for="txCurrUSD" class="pill-btn" style="flex:1; text-align:center;">USD</label>
+                <input type="radio" id="txCurrUSC" name="txCurrNew" value="USC"><label for="txCurrUSC" class="pill-btn" style="flex:1; text-align:center;">USC</label>
+            </div>
+            <label class="modal-label" style="font-size: 13px;">จำนวนเงิน</label>
+            <input type="number" id="txAmount" class="pill-input" placeholder="0.00" step="0.01" style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">
+            <label class="modal-label" style="font-size: 13px;">หมายเหตุ</label>
+            <input type="text" id="txNote" class="pill-input" placeholder="ระบุเหตุผล" style="margin-bottom: 25px;">
+            <div class="modal-actions">
+                <button id="cancelModalBtn" class="cancel-btn pill-btn-action" style="flex: 1; border-radius: 12px;">ยกเลิก</button>
+                <button id="confirmTxBtn" class="confirm-btn pill-btn-action" style="flex: 1.5; border-radius: 12px; background: #3b82f6;">บันทึกรายการ</button>
+            </div>
+        </div>
+    </div>
 
-        if (overviewPage.style.display === 'none' || overviewPage.style.display === '') {
-            // 1. ซ่อนหน้าอื่น เปิดหน้าภาพรวม
-            if (homePage) homePage.style.display = 'none';
-            if (calendarPage) calendarPage.style.display = 'none';
-            overviewPage.style.display = 'block';
-            
-            // 2. เปลี่ยนข้อความปุ่ม
-            overviewBtn.innerHTML = '🏠 หน้าหลัก';
-            if (calBtn) calBtn.innerHTML = '📅 ปฏิทิน';
+    <div id="deleteAllModal" class="modal-overlay">
+        <div class="modal-content" style="text-align: center; background: var(--box-bg);">
+            <h2 style="margin-top:0; color: #dc3545;">คำเตือน</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">ท่านต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?</p>
+            <div class="modal-actions"><button id="cancelDeleteAllBtn" class="cancel-btn">ยกเลิก</button><button id="confirmDeleteAllBtn" class="danger-btn">ยืนยันการล้าง</button></div>
+        </div>
+    </div>
 
-            // 🎯 3. สั่งวาดกราฟทันที! (ดีเลย์ 50ms ให้กล่องมันกางให้เสร็จก่อนวาด)
-            setTimeout(() => {
-                if (window.renderEquityChart) {
-                    window.renderEquityChart();
+    <div id="cancelTradeModal" class="modal-overlay">
+        <div class="modal-content" style="text-align: center; background: var(--box-bg);">
+            <h2 style="margin-top:0; color: #ff9800;">ยกเลิกการบันทึก</h2>
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">ข้อมูลที่กรอกไว้จะไม่ถูกบันทึก</p>
+            <div class="modal-actions">
+                <button id="resumeTradeBtn" class="cancel-btn pill-btn-action" style="background-color: rgba(0, 123, 255, 0.1); color: #007bff;">ทำต่อ</button>
+                <button id="confirmCancelTradeBtn" class="danger-btn pill-btn-action">ยกเลิก</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="successSaveModal" class="modal-overlay" style="z-index: 1500;">
+        <div class="modal-content" style="text-align: center; border-radius: 30px; padding: 30px 20px; background: var(--box-bg);">
+            <div class="success-icon" style="color: #28a745; font-size: 40px;">✓</div>
+            <h2 style="margin-top: 15px; color: #28a745;">บันทึกสำเร็จ</h2>
+            <button id="closeSuccessSaveBtn" class="confirm-btn pill-btn-action" style="width: 100%; margin-top: 15px; background-color: #28a745;">ตกลง</button>
+        </div>
+    </div>
+
+    <div id="viewDayModal" class="modal-overlay">
+        <div class="modal-content" style="max-height: 85vh; overflow-y: auto; width: 90%; max-width: 450px; padding: 20px; background: var(--box-bg);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+                <h3 id="viewDayTitle" style="margin: 0; font-size: 15px; color: var(--text-main);">บันทึกประจำวัน</h3>
+                <button id="addTradeFromDayBtn" class="confirm-btn pill-btn-action" style="padding: 6px 12px; font-size: 12px; margin-left: 10px; background: var(--accent-color);">+ เพิ่มออเดอร์</button>
+            </div>
+            <div id="dayTradesList"></div>
+            <button id="closeViewDayBtn" class="cancel-btn pill-btn-action" style="width: 100%; margin-top: 15px;">ปิดหน้าต่าง</button>
+        </div>
+    </div>
+
+    <div id="imageViewerModal" class="modal-overlay" style="z-index: 9999; background-color: rgba(0,0,0,0.92); flex-direction: column;">
+        <span id="closeImageViewer" class="close-img-btn" style="color:white; font-size: 40px; position: absolute; top: 20px; right: 30px; cursor: pointer;">&times;</span>
+        <img id="fullScreenImage" src="" style="max-width: 95%; max-height: 85vh; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    </div>
+
+    <script>
+        // --- 1. จัดการ Profile (ย่อคอมเมนต์ให้กระชับ) ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedName = localStorage.getItem('portfolioName');
+            const savedRole = localStorage.getItem('portfolioRole');
+            const savedBio = localStorage.getItem('portfolioBio');
+            const savedImg = localStorage.getItem('portfolioImg');
+
+            if (savedName) {
+                document.getElementById('heroNameText').innerHTML = savedName.replace(/\n/g, '<br>');
+                document.getElementById('editProfileName').value = savedName;
+            }
+            if (savedRole) {
+                document.getElementById('heroRoleText').textContent = savedRole;
+                document.getElementById('editProfileRole').value = savedRole;
+            }
+            if (savedBio) {
+                document.getElementById('heroBioText').textContent = savedBio;
+                document.getElementById('editProfileBio').value = savedBio;
+            }
+            if (savedImg) {
+                document.getElementById('heroProfileImg').src = savedImg;
+                document.getElementById('previewProfileImg').src = savedImg;
+            }
+
+            document.getElementById('profileImageInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = e => document.getElementById('previewProfileImg').src = e.target.result;
+                    reader.readAsDataURL(file);
                 }
-            }, 50);
-
-        } else {
-            // ปิดหน้าภาพรวม กลับหน้าหลัก
-            overviewPage.style.display = 'none';
-            if (homePage) homePage.style.display = 'block';
-            
-            overviewBtn.innerHTML = 'ภาพรวม';
-        }
-    }
-
-    // ช่วยดักจับ: ถ้ากดปุ่ม "ปฏิทิน" ให้รีเซ็ตปุ่มภาพรวมด้วย
-    document.addEventListener("DOMContentLoaded", function() {
-        const calBtn = document.getElementById('pageToggleBtn');
-        if (calBtn) {
-            calBtn.addEventListener('click', function() {
-                const overviewPage = document.getElementById('overviewPage');
-                const overviewBtn = document.getElementById('overviewToggleBtn');
-                if (overviewPage) overviewPage.style.display = 'none';
-                if (overviewBtn) overviewBtn.innerHTML = 'ภาพรวม';
             });
+
+            document.getElementById('saveProfileBtn').addEventListener('click', () => {
+                const newName = document.getElementById('editProfileName').value || 'Teerawut \nWongnangsue';
+                const newRole = document.getElementById('editProfileRole').value || 'Smart Money Concept Trader & Developer';
+                const newBio = document.getElementById('editProfileBio').value || 'ยินดีต้อนรับสู่ Trading Portfolio';
+                const newImg = document.getElementById('previewProfileImg').src;
+
+                localStorage.setItem('portfolioName', newName);
+                localStorage.setItem('portfolioRole', newRole);
+                localStorage.setItem('portfolioBio', newBio);
+                localStorage.setItem('portfolioImg', newImg);
+
+                document.getElementById('heroNameText').innerHTML = newName.replace(/\n/g, '<br>');
+                document.getElementById('heroRoleText').textContent = newRole;
+                document.getElementById('heroBioText').textContent = newBio;
+                document.getElementById('heroProfileImg').src = newImg;
+
+                document.getElementById('profileSettingsModal').style.display = 'none';
+            });
+        });
+
+        // --- ระบบนำทาง (Navigation) แบบสมบูรณ์ ป้องกันบัคฟอร์มซ้อน ---
+        function switchPage(pageId) {
+            // 🚨 1. ตรวจสอบว่าผู้ใช้กำลังเปิดหน้าฟอร์ม "บันทึกเทรด" (Step 1-4) ค้างไว้หรือไม่?
+            const isAddingTrade = ['addTradePage', 'addTradeStep2Page', 'addTradeStep3Page', 'addTradeStep4Page'].some(id => {
+                const el = document.getElementById(id);
+                return el && el.style.display === 'block';
+            });
+
+            // 🚨 2. ถ้ากำลังกรอกข้อมูลอยู่ ให้แสดงหน้าต่างเตือนและ "หยุด" การย้ายหน้าทันที
+            if (isAddingTrade) {
+                const cancelModal = document.getElementById('cancelTradeModal');
+                if (cancelModal) cancelModal.style.display = 'flex';
+                return; // สำคัญมาก! สั่งหยุดทำงาน เพื่อไม่ให้มันไปโหลดหน้าแรกซ้อนทับฟอร์ม
+            }
+
+            // 3. ซ่อนทุกหน้าหลักให้หมดก่อน (กรณีปกติ)
+            document.getElementById('homePage').style.display = 'none';
+            document.getElementById('calendarPage').style.display = 'none';
+            document.getElementById('overviewPage').style.display = 'none';
+            
+            // 4. โชว์เฉพาะหน้าที่เราเลือก
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.style.display = 'block';
+            }
+
+            // 5. อัปเดตสีปุ่ม Navbar ให้ตรงกับหน้าที่เลือก
+            if(document.getElementById('navHome')) document.getElementById('navHome').style.color = (pageId === 'homePage') ? 'var(--accent-color)' : 'var(--text-main)';
+            if(document.getElementById('navOverview')) document.getElementById('navOverview').style.color = (pageId === 'overviewPage') ? 'var(--accent-color)' : 'var(--text-main)';
+            if(document.getElementById('navCalendar')) document.getElementById('navCalendar').style.color = (pageId === 'calendarPage') ? 'var(--accent-color)' : 'var(--text-main)';
+
+            // 6. รีเฟรชกราฟถ้าเข้าหน้าภาพรวม
+            if (pageId === 'overviewPage' && window.renderEquityChart) {
+                setTimeout(() => window.renderEquityChart(), 50);
+            }
         }
-    });
-</script>
-<button id="pageToggleBtn" class="fab-btn">📅 ปฏิทิน</button>
-<button id="addTradeFabBtn" class="fab-add-btn">+</button>
-<button id="nextStepFabBtn" class="fab-next-btn" style="display: none;">ถัดไป ➔</button>
-<button id="nextStep2FabBtn" class="fab-next-btn" style="display: none;">ถัดไป ➔</button>
-<button id="nextStep3FabBtn" class="fab-next-btn" style="display: none;">ถัดไป ➔</button>
-<button id="saveTradeFabBtn" class="fab-next-btn" style="display: none; background-color: #ff9800; box-shadow: 0 5px 20px rgba(255, 152, 0, 0.4);">💾 บันทึกข้อมูล</button>
 
+        // --- 3. ระบบลูกบอลออเดอร์ (ขอบเทารอออเดอร์เข้า) ---
+        window.updateOrbitingBalls = function(recentTrades) {
+            const tradesToShow = recentTrades ? recentTrades.slice(0, 5) : [];
 
-<div id="txModal" class="modal-overlay">
-    <div class="modal-content" style="border-radius: 20px; padding: 25px;">
-        <h3 style="margin-top: 0; text-align: center; color: var(--text-color); font-size: 20px; margin-bottom: 20px;">⚙️ จัดการเงินทุน</h3>
-        
-        <label class="modal-label" style="font-size: 13px;">📅 วันที่ทำรายการ</label>
-        <input type="date" id="txDate" class="pill-input" style="margin-bottom: 15px;">
+            for (let i = 0; i < 5; i++) {
+                const ballNumber = i + 1; 
+                const ball = document.getElementById(`orbit-${ballNumber}`);
+                
+                if (ball) {
+                    if (i < tradesToShow.length) {
+                        const trade = tradesToShow[i];
+                        const statusClass = (trade.result === 'win') ? 'orbit-win' : 'orbit-loss';
+                        ball.className = `orbit-ball ball-${ballNumber} ${statusClass}`;
+                        ball.textContent = trade.percent; 
+                    } else {
+                        // ช่องว่าง: แสดงขอบเทา
+                        ball.className = `orbit-ball ball-${ballNumber}`; 
+                        ball.textContent = ''; 
+                    }
+                }
+            }
+        };
 
-        <label class="modal-label" style="font-size: 13px;">ประเภทรายการ</label>
-        <div class="custom-radio-group" style="margin-bottom: 15px;">
-            <input type="radio" id="txTypeDep" name="txTypeNew" value="deposit" checked>
-            <label for="txTypeDep" class="pill-btn deposit-btn" style="flex:1; text-align:center;">🟢 ฝากเงิน</label>
-            <input type="radio" id="txTypeWith" name="txTypeNew" value="withdraw">
-            <label for="txTypeWith" class="pill-btn withdraw-btn" style="flex:1; text-align:center;">🔴 ถอนเงิน</label>
-        </div>
-        
-        <label class="modal-label" style="font-size: 13px;">สกุลเงิน</label>
-        <div class="custom-radio-group" style="margin-bottom: 15px;">
-            <input type="radio" id="txCurrUSD" name="txCurrNew" value="USD" checked>
-            <label for="txCurrUSD" class="pill-btn" style="flex:1; text-align:center;">USD</label>
-            <input type="radio" id="txCurrUSC" name="txCurrNew" value="USC">
-            <label for="txCurrUSC" class="pill-btn" style="flex:1; text-align:center;">USC</label>
-        </div>
-        
-        <label class="modal-label" style="font-size: 13px;">จำนวนเงิน</label>
-        <input type="number" id="txAmount" class="pill-input" placeholder="0.00" step="0.01" style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">
-        
-        <label class="modal-label" style="font-size: 13px;">หมายเหตุ</label>
-        <input type="text" id="txNote" class="pill-input" placeholder="ระบุเหตุผล (เช่น เติมพอร์ตประจำเดือน)" style="margin-bottom: 25px;">
-        
-        <div class="modal-actions">
-            <button id="cancelModalBtn" class="cancel-btn pill-btn-action" style="flex: 1; border-radius: 12px;">ยกเลิก</button>
-            <button id="confirmTxBtn" class="confirm-btn pill-btn-action" style="flex: 1.5; border-radius: 12px; background: #3b82f6;">บันทึกรายการ</button>
-        </div>
-    </div>
-</div>
+        // --- 4. ระบบ Dropdown Custom Select ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectWrappers = document.querySelectorAll('.custom-select-wrapper');
+            selectWrappers.forEach(wrapper => {
+                const trigger = wrapper.querySelector('.custom-select-trigger');
+                trigger.addEventListener('click', (e) => {
+                    e.stopPropagation(); 
+                    selectWrappers.forEach(w => { if (w !== wrapper) w.classList.remove('open'); });
+                    wrapper.classList.toggle('open');
+                });
+            });
 
-<div id="txDetailModal" class="modal-overlay">
-    <div class="modal-content">
-        <h3 style="margin-top: 0; text-align: center; color: var(--text-color);">รายละเอียดการทำรายการ</h3>
-        <div id="detailContent" class="detail-box"></div>
-        <button id="closeDetailBtn" class="cancel-btn" style="width: 100%; margin-top: 20px;">ปิดหน้าต่าง</button>
-    </div>
-</div>
+            document.addEventListener('click', () => {
+                selectWrappers.forEach(w => w.classList.remove('open'));
+            });
+        });
+    </script>
 
-<div id="deleteSingleModal" class="modal-overlay">
-    <div class="modal-content" style="text-align: center;">
-        <h2 style="margin-top:0; color: #dc3545;">ยืนยันการลบ</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">ท่านต้องการลบรายการนี้ใช่หรือไม่?<br>ระบบจะทำการคำนวณยอดเงินคืนอัตโนมัติ</p>
-        <div class="modal-actions"><button id="cancelDeleteSingleBtn" class="cancel-btn">ยกเลิก</button><button id="confirmDeleteSingleBtn" class="danger-btn">ลบข้อมูล</button></div>
-    </div>
-</div>
-
-<div id="deleteAllModal" class="modal-overlay">
-    <div class="modal-content" style="text-align: center;">
-        <h2 style="margin-top:0; color: #dc3545;">คำเตือน</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">ท่านต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?<br>ข้อมูลจะไม่สามารถกู้คืนได้</p>
-        <div class="modal-actions"><button id="cancelDeleteAllBtn" class="cancel-btn">ยกเลิก</button><button id="confirmDeleteAllBtn" class="danger-btn">ยืนยันการล้างข้อมูล</button></div>
-    </div>
-</div>
-
-<div id="cancelTradeModal" class="modal-overlay">
-    <div class="modal-content" style="text-align: center;">
-        <h2 style="margin-top:0; color: #ff9800;">ยกเลิกการบันทึก</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">ข้อมูลที่กรอกไว้จะไม่ถูกบันทึก<br>ท่านต้องการยกเลิกใช่หรือไม่?</p>
-        <div class="modal-actions">
-            <button id="resumeTradeBtn" class="cancel-btn pill-btn-action" style="background-color: #e6f2ff; color: #007bff;">ดำเนินการต่อ</button>
-            <button id="confirmCancelTradeBtn" class="danger-btn pill-btn-action">ยืนยันการยกเลิก</button>
-        </div>
-    </div>
-</div>
-
-<div id="successSaveModal" class="modal-overlay" style="z-index: 1500;">
-    <div class="modal-content" style="text-align: center; border-radius: 30px; padding: 30px 20px;">
-        <div class="success-icon">✓</div>
-        <h2 style="margin-top: 15px; color: #28a745;">บันทึกสำเร็จ</h2>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px;">ระบบได้บันทึกข้อมูลการเทรด<br>และปรับปรุงยอดเงินเรียบร้อยแล้ว</p>
-        <button id="closeSuccessSaveBtn" class="confirm-btn pill-btn-action" style="width: 100%; background-color: #28a745;">ตกลง</button>
-    </div>
-</div>
-
-<div id="viewDayModal" class="modal-overlay">
-    <div class="modal-content" style="max-height: 85vh; overflow-y: auto; width: 90%; max-width: 350px; padding: 20px; box-sizing: border-box;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
-            <h3 id="viewDayTitle" style="margin: 0; font-size: 15px; color: var(--text-color);">บันทึกประจำวัน</h3>
-            <button id="addTradeFromDayBtn" class="confirm-btn pill-btn-action" style="padding: 6px 12px; font-size: 12px; white-space: nowrap; margin-left: 10px;">+ เพิ่มออเดอร์</button>
-        </div>
-        <div id="dayTradesList"></div>
-        <button id="closeViewDayBtn" class="cancel-btn pill-btn-action" style="width: 100%; margin-top: 15px;">ปิดหน้าต่าง</button>
-    </div>
-</div>
-
-<div id="imageViewerModal" class="modal-overlay" style="z-index: 9999; background-color: rgba(0,0,0,0.92); flex-direction: column;">
-    <span id="closeImageViewer" class="close-img-btn">&times;</span>
-    <img id="fullScreenImage" src="" style="max-width: 95%; max-height: 85vh; object-fit: contain; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-</div>
-
-<script type="module" src="js/firebase-config.js"></script>
-<script type="module" src="js/ui.js"></script>
-<script type="module" src="js/app.js"></script>
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/ui.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

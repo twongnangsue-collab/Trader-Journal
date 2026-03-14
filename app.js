@@ -84,11 +84,11 @@ function updateBalanceUI() {
     if (displayCurrency === 'USD') {
         getEl('currencySymbol').textContent = '$'; 
         getEl('balanceValue').textContent = currentBalance.toLocaleString('en-US', {minimumFractionDigits: 2}); 
-        if(getEl('toggleCurrencyBtn')) getEl('toggleCurrencyBtn').textContent = '🔄 เปลี่ยนเป็น USC';
+        if(getEl('toggleCurrencyBtn')) getEl('toggleCurrencyBtn').textContent = 'เปลี่ยนเป็น USC';
     } else {
         getEl('currencySymbol').textContent = '¢'; 
         getEl('balanceValue').textContent = (currentBalance * 100).toLocaleString('en-US', {maximumFractionDigits: 0}); 
-        if(getEl('toggleCurrencyBtn')) getEl('toggleCurrencyBtn').textContent = '🔄 เปลี่ยนเป็น USD';
+        if(getEl('toggleCurrencyBtn')) getEl('toggleCurrencyBtn').textContent = 'เปลี่ยนเป็น USD';
     }
 }
 
@@ -628,6 +628,8 @@ function initAppEvents() {
     if (yearWrapper) yearWrapper.querySelector('.custom-select-trigger')?.addEventListener('click', (e) => { e.stopPropagation(); if(monthWrapper) monthWrapper.classList.remove('open'); yearWrapper.classList.toggle('open'); });
     document.addEventListener('click', () => { if (monthWrapper) monthWrapper.classList.remove('open'); if (yearWrapper) yearWrapper.classList.remove('open'); });
 }
+
+
 
 // ==========================================
 // 🚀 6. เริ่มต้นการทำงานของแอป (Initialize)
