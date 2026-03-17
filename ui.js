@@ -5,6 +5,29 @@ console.log("🎨 ui.js ทำงาน: ระบบจัดการหน้
 
 const getEl = (id) => document.getElementById(id);
 
+// ==========================================
+// ฟังก์ชันโชว์ป๊อปอัปแจ้งเตือน (แทนที่ alert ธรรมดา)
+// ==========================================
+export function showCustomAlert(message) {
+    const errorModal = getEl('customErrorModal');
+    const errorText = getEl('errorMessageText');
+    if (errorModal && errorText) {
+        errorText.innerText = message;
+        errorModal.style.display = 'flex';
+    } else {
+        // กรณีฉุกเฉินถ้าหาป๊อปอัปไม่เจอ
+        alert(message);
+    }
+}
+
+// ผูกปุ่ม "รับทราบ" ให้ปิดป๊อปอัปได้
+document.addEventListener('click', function(e) {
+    if (e.target.id === 'closeErrorBtn' || e.target.closest('#closeErrorBtn')) {
+        const errorModal = getEl('customErrorModal');
+        if (errorModal) errorModal.style.display = 'none';
+    }
+});
+
 // ตัวแปรที่เราต้องส่งออกไปให้ app.js ใช้งานด้วย
 export let isShowingCalendar = false;
 export let previousPage = 'home';
@@ -58,15 +81,73 @@ export function triggerAddTrade(prefillDate = null) {
 
 if (getEl('addTradeFabBtn')) getEl('addTradeFabBtn').addEventListener('click', () => triggerAddTrade());
 
-// ปุ่ม ถัดไป (Next)
+// ==========================================
+// ปุ่ม ถัดไป (Next) พร้อมระบบดักจับข้อมูล (Validation)
+// ==========================================
 const nextBtn1 = getEl('nextStepFabBtn');
 const nextBtn2 = getEl('nextStep2FabBtn');
 const nextBtn3 = getEl('nextStep3FabBtn');
-const saveBtn = getEl('saveTradeFabBtn');
 
-if (nextBtn1) nextBtn1.addEventListener('click', () => { getEl('addTradePage').style.display = 'none'; getEl('addTradeStep2Page').style.display = 'block'; nextBtn1.style.display = 'none'; if(nextBtn2) nextBtn2.style.display = 'block'; });
-if (nextBtn2) nextBtn2.addEventListener('click', () => { getEl('addTradeStep2Page').style.display = 'none'; getEl('addTradeStep3Page').style.display = 'block'; nextBtn2.style.display = 'none'; if(nextBtn3) nextBtn3.style.display = 'block'; });
-if (nextBtn3) nextBtn3.addEventListener('click', () => { getEl('addTradeStep3Page').style.display = 'none'; getEl('addTradeStep4Page').style.display = 'block'; nextBtn3.style.display = 'none'; if(saveBtn) saveBtn.style.display = 'block'; });
+// 🛡️ ด่านที่ 1: ตรวจสอบหน้าแรก (Step 1)
+if (nextBtn1) {
+    nextBtn1.addEventListener('click', () => {
+        const date = getEl('tradeDate') ? getEl('tradeDate').value : '';
+        const time = getEl('tradeTime') ? getEl('tradeTime').value : '';
+        const symbol = getEl('tradeSymbol') ? getEl('tradeSymbol').value : '';
+        
+        // ถ้าช่องไหนว่าง ให้โชว์ป๊อปอัปสวยๆ และหยุดการทำงาน
+        if (!date || !time || !symbol.trim()) {
+            return showCustomAlert('กรุณากรอก วันที่, เวลา และ สินทรัพย์(Symbol) \nให้ครบถ้วนก่อนไปหน้าถัดไปครับ');
+        }
+
+        getEl('addTradePage').style.display = 'none'; 
+        getEl('addTradeStep2Page').style.display = 'block'; 
+        nextBtn1.style.display = 'none'; 
+        if(nextBtn2) nextBtn2.style.display = 'block'; 
+    });
+}
+
+// 🛡️ ด่านที่ 2: ตรวจสอบหน้าข้อมูลก่อนเทรด (Step 2)
+if (nextBtn2) {
+    nextBtn2.addEventListener('click', () => {
+        const reason = getEl('tradeReasonStep2') ? getEl('tradeReasonStep2').value : '';
+        const lot = getEl('tradeRiskLot') ? getEl('tradeRiskLot').value : '';
+        const rr = getEl('tradeRiskRR') ? getEl('tradeRiskRR').value : '';
+        
+        // เช็คข้อความและตัวเลข
+        if (!reason.trim() || !lot || !rr) {
+            return showCustomAlert('กรุณากรอก "เหตุผลการเข้าเทรด", "ขนาด Lot" และ "สัดส่วน RR" ให้ครบถ้วนครับ');
+        }
+
+        // เช็คว่าลืมอัปโหลดรูปกราฟไหม (ใช้ confirm ธรรมดาเพื่อความรวดเร็วในการตัดสินใจ)
+        if (typeof beforeImages !== 'undefined' && beforeImages.length === 0) {
+            if(!confirm('⚠️ คุณยังไม่ได้อัปโหลดรูปภาพกราฟ (Before) ต้องการข้ามไปหน้าถัดไปหรือไม่?')) {
+                return; // ถ้ากด Cancel จะไม่เปลี่ยนหน้า
+            }
+        }
+
+        getEl('addTradeStep2Page').style.display = 'none'; 
+        getEl('addTradeStep3Page').style.display = 'block'; 
+        nextBtn2.style.display = 'none'; 
+        if(nextBtn3) nextBtn3.style.display = 'block'; 
+    });
+}
+
+// 🛡️ ด่านที่ 3: ตรวจสอบหน้าข้อมูลหลังปิดออเดอร์ (Step 3)
+if (nextBtn3) {
+    nextBtn3.addEventListener('click', () => {
+        const lesson = getEl('tradeLessonStep3') ? getEl('tradeLessonStep3').value : '';
+        
+        // เช็คข้อความสรุปผล
+        if (!lesson.trim()) {
+            return showCustomAlert('กรุณากรอก "ผลการเทรดและสิ่งที่ได้เรียนรู้" \nเพื่อเป็นบทเรียนให้ครบถ้วนครับ');
+        }
+
+        getEl('addTradeStep3Page').style.display = 'none'; 
+        getEl('addTradeStep4Page').style.display = 'block'; 
+        nextBtn3.style.display = 'none'; 
+    });
+}
 
 // ปุ่ม ย้อนกลับ (Back)
 if (getEl('backToStep1Btn')) getEl('backToStep1Btn').addEventListener('click', () => { getEl('addTradeStep2Page').style.display = 'none'; getEl('addTradePage').style.display = 'block'; if(nextBtn2) nextBtn2.style.display = 'none'; if(nextBtn1) nextBtn1.style.display = 'block'; });
@@ -420,3 +501,24 @@ document.addEventListener('DOMContentLoaded', () => {
         pickr.hide(); // ปิดหน้าต่าง
     });
 });
+
+// ==========================================
+// ระบบ Auto-resize Textarea (กล่องข้อความยืดตามเนื้อหาอัตโนมัติ)
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    const textareas = document.querySelectorAll('.pill-textarea');
+    
+    function autoResize() {
+        this.style.height = 'auto'; // รีเซ็ตความสูงก่อน
+        this.style.height = (this.scrollHeight) + 'px'; // ตั้งค่าความสูงใหม่ตามเนื้อหาข้างใน
+    }
+
+    textareas.forEach(textarea => {
+        // ให้ยืดทันทีที่มีการพิมพ์หรือลบข้อความ
+        textarea.addEventListener('input', autoResize, false);
+        
+        // ให้คำนวณความสูงเผื่อไว้เลยตอนโหลดหน้าเว็บ
+        setTimeout(() => autoResize.call(textarea), 0);
+    });
+});
+

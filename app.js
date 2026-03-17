@@ -416,218 +416,117 @@ window.deleteTx = async function(event, txId, isTrade, tradeId) {
 };
 
 // ==========================================
-// 5. เหตุการณ์และปุ่มกด (Event Listeners)
-// ==========================================
-function initAppEvents() {
-    
-    // บันทึกการเทรด (Save Trade)
-    if (getEl('saveTradeFabBtn')) {
-        getEl('saveTradeFabBtn').addEventListener('click', async () => {
-            const finalAmount = Number(getEl('tradeFinalAmount').value);
-            if(isNaN(finalAmount) || finalAmount <= 0) return alert('กรุณาระบุจำนวนเงินสุทธิให้ถูกต้อง');
+    // 5. เหตุการณ์และปุ่มกด (Event Listeners)
+    // ==========================================
+    function initAppEvents() {
+        
+        // 🚀 ระบบบันทึกการเทรด (Save Trade) รุ่นสมบูรณ์แบบ
+        const saveBtn = document.getElementById('saveTradeBtn'); // ใช้ ID ของปุ่มใหม่ (Step 4)
 
-            const btn = getEl('saveTradeFabBtn');
-            btn.textContent = '⏳ กำลังอัปโหลด...'; 
-            btn.style.pointerEvents = 'none';
+        if (saveBtn) {
+            saveBtn.addEventListener('click', async () => {
+                // 1. ดึงยอดเงินจากช่องใหม่
+                const finalAmount = Number(getEl('tradeAmount').value);
+                if(isNaN(finalAmount) || finalAmount <= 0) return alert('กรุณาระบุจำนวนเงินสุทธิให้ถูกต้อง');
 
-            try {
-                const currencyElem = document.querySelector('input[name="tradeCurrency"]:checked');
-                const outcomeElem = document.querySelector('input[name="tradeOutcome"]:checked');
-                const currency = currencyElem ? currencyElem.value : 'USD';
-                const outcome = outcomeElem ? outcomeElem.value : 'win';
-                const symbol = getEl('tradeSymbol') ? getEl('tradeSymbol').value : 'Unknown';
-                let amountUSD = currency === 'USC' ? finalAmount / 100 : finalAmount;
+                const btn = getEl('saveTradeBtn');
+                btn.textContent = '⏳ กำลังอัปโหลด...'; 
+                btn.style.pointerEvents = 'none';
 
-                let percentChange = currentBalance > 0 ? (amountUSD / currentBalance) * 100 : 100;
-                let percentChangeStr = outcome === 'win' ? `+${percentChange.toFixed(2)}%` : `-${percentChange.toFixed(2)}%`;
-
-                // อัปโหลดรูปภาพ
-                let finalBeforeImgs = [];
-                for (let i = 0; i < beforeImages.length; i++) {
-                    const imgUrl = await uploadToImgBB(beforeImages[i]);
-                    finalBeforeImgs.push(imgUrl); 
-                }
-
-                let finalAfterImgs = [];
-                for (let i = 0; i < afterImages.length; i++) {
-                    const imgUrl = await uploadToImgBB(afterImages[i]);
-                    finalAfterImgs.push(imgUrl);
-                }
-
-                const getVal = (id) => getEl(id) ? getEl(id).value : '';
-                const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`) ? document.querySelector(`input[name="${name}"]:checked`).value : '';
-
-                // เตรียมข้อมูลบันทึกลง Firestore
-                const tradeData = {
-                    date: getVal('tradeDate'), time: getVal('tradeTime'), symbol: symbol, orderType: getVal('tradeOrderType'), percent: percentChangeStr, reason: getVal('tradeReasonStep2'), emotionBefore: getVal('tradeEmotionStep2'), lot: getVal('tradeRiskLot'), rr: getVal('tradeRiskRR'), followPlan: getRadio('followPlan'), mistake: getVal('tradeMistake'), improvement: getVal('tradeImprovement'), emotionAfter: getVal('tradeEmotionAfter'), finalOutcome: outcome, finalAmount: finalAmount, finalCurrency: currency, beforeImages: finalBeforeImgs, afterImages: finalAfterImgs, timestamp: Date.now()
-                };
-                
-                const tradeRef = await addDoc(collection(db, "trades"), tradeData);
-
-                // บันทึกลงยอดเงิน
-                await addDoc(collection(db, "transactions"), {
-                    tradeId: tradeRef.id, type: outcome === 'win' ? 'deposit' : 'withdraw', isTrade: true, currency: currency, originalAmount: finalAmount, amountUSD: amountUSD, percentChange: percentChangeStr, note: `รายการเทรด ${symbol}`, date: new Date().toLocaleString('th-TH'), timestamp: Date.now()
-                });
-
-                if(getEl('successSaveModal')) getEl('successSaveModal').style.display = 'flex';
-                clearTradeForm(); 
-                goBackFromTrade(); 
-                loadData(); 
-            } catch (e) {
-                console.error(e); 
-                alert('⚠️ ไม่สามารถบันทึกได้: ' + e.message);
-            } finally {
-                btn.innerHTML = '💾 บันทึกข้อมูล'; 
-                btn.style.pointerEvents = 'auto';
-            }
-        });
-    }
-
-    // บันทึกฝากถอนเงิน (Tx)
-    setTimeout(() => {
-        const confirmBtn = document.getElementById('confirmTxBtn');
-        if (confirmBtn) {
-            const cleanBtn = confirmBtn.cloneNode(true);
-            confirmBtn.parentNode.replaceChild(cleanBtn, confirmBtn);
-
-            cleanBtn.addEventListener('click', async () => {
-                const typeEl = document.querySelector('input[name="txTypeNew"]:checked') || document.querySelector('input[name="txType"]:checked');
-                const currEl = document.querySelector('input[name="txCurrNew"]:checked') || document.querySelector('input[name="txCurrency"]:checked');
-                
-                if (!typeEl || !currEl) return alert("กรุณาเลือกประเภทและสกุลเงินให้ครบถ้วน");
-
-                const type = typeEl.value; 
-                const curr = currEl.value;
-                const amt = Number(document.getElementById('txAmount').value);
-                const dateInput = document.getElementById('txDate').value; 
-
-                if (!dateInput) return alert("กรุณาเลือกวันที่ทำรายการ");
-                if (isNaN(amt) || amt <= 0) return alert("กรุณาระบุจำนวนเงินให้ถูกต้อง");
-                
-                const amtUSD = curr === 'USC' ? amt/100 : amt;
-                let cBal = (typeof currentBalance !== 'undefined') ? currentBalance : 0;
-                
-                if (type === 'withdraw' && cBal < amtUSD) return alert("ยอดเงินไม่เพียงพอสำหรับการทำรายการ"); 
-
-                let percentChange = (cBal > 0) ? (amtUSD / cBal) * 100 : 100;
-                let percentChangeStr = type === 'deposit' ? `+${percentChange.toFixed(2)}%` : `-${percentChange.toFixed(2)}%`;
-
-                cleanBtn.textContent = "กำลังบันทึก...";
                 try {
-                    const txTimestamp = new Date(dateInput).getTime();
-                    await addDoc(collection(db, "transactions"), { type: type, currency: curr, originalAmount: amt, amountUSD: amtUSD, percentChange: percentChangeStr, note: document.getElementById('txNote').value || '', date: new Date().toLocaleString('th-TH'), txDate: dateInput, timestamp: txTimestamp, isTrade: false });
+                    // 2. ดึงค่าจาก Radio Button รุ่นใหม่
+                    const currencyElem = document.querySelector('input[name="tradeCurrency"]:checked');
+                    const outcomeElem = document.querySelector('input[name="tradeResult"]:checked');
+                    const currency = currencyElem ? currencyElem.value : 'USD';
+                    const outcome = outcomeElem ? outcomeElem.value : 'win';
+                    const symbol = getEl('tradeSymbol') ? getEl('tradeSymbol').value : 'Unknown';
+                    let amountUSD = currency === 'USC' ? finalAmount / 100 : finalAmount;
+
+                    // 3. คำนวณเปอร์เซ็นต์
+                    let percentChange = currentBalance > 0 ? (amountUSD / currentBalance) * 100 : 100;
+                    let percentChangeStr = outcome === 'win' ? `+${percentChange.toFixed(2)}%` : `-${percentChange.toFixed(2)}%`;
+
+                    // 4. โยนรูปขึ้น ImgBB (เหมือนระบบเดิมของคุณที่สมบูรณ์อยู่แล้ว)
+                    let finalBeforeImgs = [];
+                    for (let i = 0; i < beforeImages.length; i++) {
+                        const imgUrl = await uploadToImgBB(beforeImages[i]);
+                        finalBeforeImgs.push(imgUrl); 
+                    }
+
+                    let finalAfterImgs = [];
+                    for (let i = 0; i < afterImages.length; i++) {
+                        const imgUrl = await uploadToImgBB(afterImages[i]);
+                        finalAfterImgs.push(imgUrl);
+                    }
+
+                    const getVal = (id) => getEl(id) ? getEl(id).value : '';
+                    const getRadio = (name) => document.querySelector(`input[name="${name}"]:checked`) ? document.querySelector(`input[name="${name}"]:checked`).value : '';
+
+                    // 5. เตรียมข้อมูล Trade (ใช้ ID ตาม UI ใหม่)
+                    const tradeData = {
+                        date: getVal('tradeDate'), 
+                        time: getVal('tradeTime'), 
+                        symbol: symbol.toUpperCase(), 
+                        orderType: getVal('tradeOrderType'), 
+                        percent: percentChangeStr, 
+                        reason: getVal('tradeReasonStep2'), 
+                        emotionBefore: getVal('tradeEmotionStep2'), 
+                        lot: getVal('tradeRiskLot'), 
+                        rr: getVal('tradeRiskRR'), 
+                        mistake: getVal('tradeLessonStep3'), // บทเรียนหลังเทรด
+                        emotionAfter: getVal('tradeEmotionStep3'), // อารมณ์หลังเทรด
+                        finalOutcome: outcome, 
+                        finalAmount: finalAmount, 
+                        finalCurrency: currency, 
+                        beforeImages: finalBeforeImgs, 
+                        afterImages: finalAfterImgs, 
+                        timestamp: Date.now()
+                    };
                     
-                    document.getElementById('txAmount').value = ''; 
-                    document.getElementById('txNote').value = '';
-                    const cancelBtn = document.getElementById('cancelModalBtn'); 
-                    if (cancelBtn) cancelBtn.click();
-                    alert("บันทึกข้อมูลสำเร็จ!"); 
-                    loadData(); 
-                } catch(e) {
-                    console.error("🔥 Error บันทึกเงิน:", e); 
-                    alert("เกิดข้อผิดพลาดในการบันทึก: " + e.message);
-                } finally { 
-                    cleanBtn.textContent = "บันทึกรายการ"; 
+                    // บันทึกลง Firestore (Trades)
+                    const tradeRef = await addDoc(collection(db, "trades"), tradeData);
+
+                    // 6. บันทึกลง Firestore (Transactions เพื่อให้ยอดเงินขยับ)
+                    await addDoc(collection(db, "transactions"), {
+                        tradeId: tradeRef.id, 
+                        type: outcome === 'win' ? 'deposit' : 'withdraw', 
+                        isTrade: true, 
+                        currency: currency, 
+                        originalAmount: finalAmount, 
+                        amountUSD: amountUSD, 
+                        percentChange: percentChangeStr, 
+                        note: `รายการเทรด ${symbol.toUpperCase()}`, 
+                        date: new Date().toLocaleString('th-TH'), 
+                        timestamp: Date.now()
+                    });
+
+                    // 7. สำเร็จ! โชว์ป๊อปอัป และล้างฟอร์ม
+                    if(getEl('customSuccessModal')) getEl('customSuccessModal').style.display = 'flex';
+                    
+                } catch (e) {
+                    console.error(e); 
+                    alert('⚠️ ไม่สามารถบันทึกได้: ' + e.message);
+                } finally {
+                    btn.innerHTML = '💾 ยืนยันการบันทึกข้อมูล'; 
+                    btn.style.pointerEvents = 'auto';
                 }
             });
         }
-    }, 500);
-
-    // เปิดหน้าต่างฝากถอน + เซ็ตวันที่อัตโนมัติ
-    if (getEl('openModalBtn')) {
-        getEl('openModalBtn').addEventListener('click', () => {
-            const today = new Date();
-            const yyyy = today.getFullYear(); 
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); 
-            const dd = String(today.getDate()).padStart(2, '0');
-            if(getEl('txDate')) getEl('txDate').value = `${yyyy}-${mm}-${dd}`;
-        });
-    }
-
-    // ล้างข้อมูลทั้งหมด (Clear All)
-    const btnDeleteAll = getEl('deleteAllBtn');
-    const modalDeleteAll = getEl('deleteAllModal');
-    const btnCancelDeleteAll = getEl('cancelDeleteAllBtn');
-    const btnConfirmDeleteAll = getEl('confirmDeleteAllBtn');
-
-    if (btnDeleteAll) {
-        const cleanBtnDeleteAll = btnDeleteAll.cloneNode(true);
-        btnDeleteAll.parentNode.replaceChild(cleanBtnDeleteAll, btnDeleteAll);
-        cleanBtnDeleteAll.addEventListener('click', () => { if (modalDeleteAll) modalDeleteAll.style.display = 'flex'; });
-    }
-    if (btnCancelDeleteAll) btnCancelDeleteAll.addEventListener('click', () => { if (modalDeleteAll) modalDeleteAll.style.display = 'none'; });
-
-    if (btnConfirmDeleteAll) {
-        const cleanConfirmBtn = btnConfirmDeleteAll.cloneNode(true);
-        btnConfirmDeleteAll.parentNode.replaceChild(cleanConfirmBtn, btnConfirmDeleteAll);
-        cleanConfirmBtn.addEventListener('click', async () => {
-            cleanConfirmBtn.textContent = '⏳ กำลังล้างข้อมูล...'; 
-            cleanConfirmBtn.style.pointerEvents = 'none';
-            try {
-                for (let t of tradeHistory) await deleteDoc(doc(db, "trades", t.id));
-                for (let tx of transactions) await deleteDoc(doc(db, "transactions", tx.id));
-                if (modalDeleteAll) modalDeleteAll.style.display = 'none';
-                alert("ล้างข้อมูลทั้งหมดสำเร็จแล้ว! พอร์ตของคุณกลับมาเริ่มต้นใหม่ ($0.00) ครับ");
+        
+        // ---- 8. จัดการปุ่ม "ตกลง" ใน Popup ความสำเร็จ ----
+        const closeSuccessBtn = document.getElementById('closeSuccessBtn');
+        if (closeSuccessBtn) {
+            closeSuccessBtn.addEventListener('click', () => {
+                if(getEl('customSuccessModal')) getEl('customSuccessModal').style.display = 'none';
+                
+                clearTradeForm(); 
+                goBackFromTrade(); 
+                
+                // โหลดข้อมูลจาก Firestore ใหม่หมด เพื่อให้ยอดเงินและปฏิทินอัปเดตแบบสดๆ!
                 loadData(); 
-            } catch (error) { 
-                alert("เกิดข้อผิดพลาด: " + error.message); 
-            } finally { 
-                cleanConfirmBtn.textContent = 'ยืนยันการล้างข้อมูล'; 
-                cleanConfirmBtn.style.pointerEvents = 'auto'; 
-            }
-        });
+            });
+        }
     }
-
-    // ปุ่มสลับเงิน
-    if (getEl('toggleCurrencyBtn')) {
-        getEl('toggleCurrencyBtn').addEventListener('click', () => { 
-            displayCurrency = displayCurrency === 'USD' ? 'USC' : 'USD'; 
-            localStorage.setItem('displayCurrency', displayCurrency); 
-            updateBalanceUI(); 
-            renderEquityChart(); 
-        });
-    }
-
-    // การนำทางปฏิทิน
-    if (getEl('prevMonthBtn')) getEl('prevMonthBtn').addEventListener('click', () => { viewingMonth--; if (viewingMonth < 0) { viewingMonth = 11; viewingYear--; } renderCalendar(); });
-    if (getEl('nextMonthBtn')) getEl('nextMonthBtn').addEventListener('click', () => { viewingMonth++; if (viewingMonth > 11) { viewingMonth = 0; viewingYear++; } renderCalendar(); });
-    if (getEl('closeViewDayBtn')) getEl('closeViewDayBtn').addEventListener('click', () => { getEl('viewDayModal').style.display = 'none'; });
-    if (getEl('addTradeFromDayBtn')) getEl('addTradeFromDayBtn').addEventListener('click', () => { if(getEl('viewDayModal')) getEl('viewDayModal').style.display = 'none'; triggerAddTrade(selectedDateForNewTrade); });
-
-    // ปุ่ม Overview (ภาพรวม)
-    const overviewBtn = getEl('overviewToggleBtn');
-    const calBtn = getEl('pageToggleBtn');
-    if (overviewBtn) {
-        overviewBtn.onclick = function(e) {
-            e.preventDefault();
-            const overviewPage = getEl('overviewPage'); const homePage = getEl('homePage'); const calendarPage = getEl('calendarPage');
-            if (!overviewPage) return;
-            if (overviewPage.style.display === 'none' || overviewPage.style.display === '') {
-                if (homePage) homePage.style.display = 'none'; if (calendarPage) calendarPage.style.display = 'none'; overviewPage.style.display = 'block';
-                overviewBtn.innerHTML = '🏠 หน้าหลัก'; if (calBtn) calBtn.innerHTML = '📅 ปฏิทิน'; 
-            } else {
-                overviewPage.style.display = 'none'; if (homePage) homePage.style.display = 'block'; overviewBtn.innerHTML = '📊 ภาพรวม';
-            }
-        };
-    }
-    if (calBtn) calBtn.addEventListener('click', function() { const overviewPage = getEl('overviewPage'); if (overviewPage) overviewPage.style.display = 'none'; if (overviewBtn) overviewBtn.innerHTML = '📊 ภาพรวม'; });
-
-    // ตั้งค่า Dropdown ปฏิทิน
-    const monthWrapper = getEl('monthWrapper'); const yearWrapper = getEl('yearWrapper');
-    const monthOptionsList = getEl('monthOptionsList'); const yearOptionsList = getEl('yearOptionsList');
-    if (monthOptionsList) {
-        monthOptionsList.innerHTML = '';
-        thaiMonths.forEach((m, i) => { let d = document.createElement('div'); d.className = 'custom-option'; d.textContent = m; d.addEventListener('click', () => { viewingMonth = i; renderCalendar(); monthWrapper.classList.remove('open'); }); monthOptionsList.appendChild(d); });
-    }
-    if (yearOptionsList) {
-        yearOptionsList.innerHTML = '';
-        const baseYear = new Date().getFullYear();
-        for (let y = baseYear - 3; y <= baseYear + 3; y++) { let d = document.createElement('div'); d.className = 'custom-option'; d.textContent = y; d.addEventListener('click', () => { viewingYear = y; renderCalendar(); yearWrapper.classList.remove('open'); }); yearOptionsList.appendChild(d); }
-    }
-    if (monthWrapper) monthWrapper.querySelector('.custom-select-trigger')?.addEventListener('click', (e) => { e.stopPropagation(); if(yearWrapper) yearWrapper.classList.remove('open'); monthWrapper.classList.toggle('open'); });
-    if (yearWrapper) yearWrapper.querySelector('.custom-select-trigger')?.addEventListener('click', (e) => { e.stopPropagation(); if(monthWrapper) monthWrapper.classList.remove('open'); yearWrapper.classList.toggle('open'); });
-    document.addEventListener('click', () => { if (monthWrapper) monthWrapper.classList.remove('open'); if (yearWrapper) yearWrapper.classList.remove('open'); });
-}
 
 
 

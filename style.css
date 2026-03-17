@@ -153,7 +153,11 @@ body {
     font-family: inherit;
     transition: all 0.3s; 
 }
-.pill-textarea { resize: vertical; }
+.pill-textarea { 
+    resize: none; /* ปิดการดึงยืดด้วยมือ เพราะเราจะให้มันยืดอัตโนมัติ */
+    overflow: hidden; /* ซ่อนสกอร์บาร์ */
+    min-height: 60px;
+}
 .pill-input:focus, .pill-textarea:focus { 
     outline: none !important; 
     border-color: var(--accent-color) !important; 
@@ -259,21 +263,31 @@ body {
     margin-bottom: 25px;
 }
 
+/* 3. กล่องเส้นประ (ตอนยังไม่มีรูป) */
 .image-upload-box {
     background: rgba(0, 0, 0, 0.3) !important;
     border: 2px dashed rgba(255, 255, 255, 0.2) !important;
     border-radius: 15px !important;
-    width: 100% !important;
-    height: 100% !important; 
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    transition: 0.3s !important;
+    width: 100%;
+    height: 100%; 
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
     cursor: pointer;
 }
-.image-upload-box:hover {
-    background: rgba(0, 0, 0, 0.6) !important;
-    border-color: var(--accent-color) !important;
+
+/* 🚨 บังคับซ่อนและทำลายพื้นที่กล่องเส้นประเด็ดขาดเมื่อมีรูปภาพแล้ว (แก้บัคเบียดซ้าย) */
+.carousel-container.has-images .image-upload-box,
+.image-upload-box[style*="display: none"] {
+    display: none !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    z-index: -100 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .carousel-wrapper {
@@ -382,3 +396,241 @@ body {
 .pcr-app[data-theme="nano"] .pcr-interaction .pcr-type.active { background: rgba(255, 255, 255, 0.1) !important; color: var(--text-muted) !important; border-radius: 50px !important; }
 .pcr-app[data-theme="nano"] .pcr-interaction .pcr-save { background: var(--accent-color) !important; color: #fff !important; border-radius: 50px !important; padding: 6px 20px !important; font-weight: bold !important; text-transform: uppercase; box-shadow: 0 0 15px var(--accent-glow) !important; transition: 0.3s !important; }
 .pcr-app[data-theme="nano"] .pcr-interaction .pcr-save:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--accent-color) !important; }
+
+/* =========================================
+   7. กล่องอัปโหลดรูปภาพ & เครื่องมือควบคุม
+   ========================================= */
+
+/* 1. ตัวคุมกล่องหลัก (เพิ่มระยะด้านบนให้ปุ่มไปวางได้พอดี) */
+.carousel-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9; 
+    transition: aspect-ratio 0.3s ease;
+    margin-bottom: 25px;
+    margin-top: 10px; 
+}
+
+/* 2. 🚨 แก้บัคกล่องซ้อน: บังคับซ่อนกล่องเส้นประเมื่ออัปโหลดรูปแล้ว */
+.carousel-container.has-images .image-upload-box {
+    display: none !important;
+}
+
+/* 3. กล่องเส้นประ (ตอนยังไม่มีรูป) */
+.image-upload-box {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 2px dashed rgba(255, 255, 255, 0.2) !important;
+    border-radius: 15px !important;
+    width: 100% !important;
+    height: 100% !important; 
+    display: flex; /* เอา !important ออกเพื่อแก้บัค */
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s !important;
+    cursor: pointer;
+}
+.image-upload-box:hover {
+    background: rgba(0, 0, 0, 0.6) !important;
+    border-color: var(--accent-color) !important;
+}
+
+/* 4. กล่องห่อรูปภาพ */
+.carousel-wrapper {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 15px;
+    overflow: hidden;
+    display: flex;
+}
+
+/* 5. ปุ่มเลือกสัดส่วน (ย้ายออกไปข้างบน ซ้าย) */
+.aspect-ratio-selector {
+    position: absolute;
+    top: -38px; /* ดันขึ้นไปนอกกล่อง */
+    left: 0;
+    z-index: 105; 
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    outline: none;
+    display: block; 
+    transition: all 0.3s ease;
+}
+.aspect-ratio-selector:hover { 
+    background: rgba(255, 255, 255, 0.1); 
+    border-color: rgba(255,255,255,0.3); 
+}
+.aspect-ratio-selector option { background: #1a1a20; color: #ffffff; }
+
+/* 6. ปุ่ม "+ เพิ่มรูปภาพ" (ย้ายออกไปข้างบน ขวา) */
+.add-more-img-btn {
+    position: absolute;
+    top: -38px; /* ดันขึ้นไปนอกกล่อง ให้อยู่ระดับเดียวกับปุ่มสัดส่วน */
+    right: 0;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-main);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s;
+    z-index: 105;
+}
+.add-more-img-btn:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* 7. ปุ่มลบรูป (✕) ให้อยู่มุมขวาบนด้านในรูปเหมือนเดิม */
+.delete-slide-btn {
+    position: absolute !important;
+    top: 15px !important;
+    right: 15px !important;
+    background: rgba(255, 0, 60, 0.8) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    z-index: 110 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+    transition: all 0.2s ease !important;
+}
+.delete-slide-btn:hover { 
+    background: rgba(255, 0, 60, 1) !important; 
+    transform: scale(1.1) !important; 
+}
+/* =========================================
+   แก้ไขระยะห่าง และ อัปเกรดปุ่มเลื่อนรูป (Carousel Controls)
+   ========================================= */
+
+/* 1. ดันกล่องรูปภาพให้ห่างจากหัวข้อด้านบนมากขึ้น */
+.carousel-container {
+    margin-top: 55px !important; /* เพิ่มระยะห่างด้านบน */
+    margin-bottom: 30px !important;
+}
+
+/* 2. ยกปุ่มสัดส่วนและปุ่มเพิ่มรูป ให้มีช่องว่างระหว่างปุ่มกับรูปภาพ */
+.aspect-ratio-selector, 
+.add-more-img-btn {
+    top: -45px !important; 
+}
+
+/* 3. เปลี่ยนปุ่มเลื่อนรูป ซ้าย-ขวา (< >) ให้เป็นวงกลมลอยอยู่บนรูป */
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.6); /* พื้นหลังดำโปร่งใส */
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%; /* ทำเป็นวงกลม */
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 105;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    padding: 0;
+}
+
+/* เอฟเฟกต์ตอนเอาเมาส์ชี้ปุ่มเลื่อนรูป */
+.carousel-nav:hover {
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translateY(-50%) scale(1.1); /* ขยายใหญ่ขึ้นนิดนึง */
+}
+
+/* จัดตำแหน่งปุ่มซ้าย-ขวา */
+.carousel-nav.prev {
+    left: 15px; /* ลอยอยู่ชิดซ้าย */
+}
+.carousel-nav.next {
+    right: 15px; /* ลอยอยู่ชิดขวา */
+}
+
+/* 4. ตกแต่งจุดไข่ปลา (Dots) ด้านล่างรูป ให้นับจำนวนรูปได้ชัดเจน */
+.carousel-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 105;
+}
+
+.carousel-dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* จุดของรูปปัจจุบันจะขยายใหญ่และเป็นสีตามธีม */
+.carousel-dots .dot.active {
+    background: var(--accent-color);
+    transform: scale(1.4);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.carousel-dots .dot:hover {
+    background: rgba(255, 255, 255, 0.9);
+}
+
+/* =========================================
+   สไตล์การ์ดรายละเอียดออเดอร์ (ในป๊อปอัปปฏิทิน)
+   ========================================= */
+.trade-record-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 20px; margin-bottom: 15px; }
+.trade-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 12px; margin-bottom: 12px; }
+.trade-symbol { font-size: 18px; font-weight: 800; color: var(--text-main); margin: 0; }
+.trade-result-badge { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: bold; }
+.trade-result-badge.win { background: rgba(0, 230, 118, 0.15); color: var(--success-color); }
+.trade-result-badge.loss { background: rgba(255, 0, 60, 0.15); color: var(--danger-color); }
+
+.delete-card-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--border-color); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+.delete-card-btn:hover { background: var(--danger-color); color: white; border-color: var(--danger-color); }
+
+/* จัดเรียงข้อมูลแบบ Grid (ตาราง 2 ฝั่ง) */
+.trade-info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 16px; }
+.info-item { display: flex; flex-direction: column; }
+.info-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;}
+.info-value { font-size: 15px; color: var(--text-main); font-weight: 600; }
+
+/* กล่องสรุปข้อความ (เหตุผล, ข้อผิดพลาด) */
+.trade-notes-box { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.02);}
+.trade-notes-box.plan-yes { border-left: 4px solid var(--success-color); }
+.trade-notes-box.plan-no { border-left: 4px solid var(--danger-color); }
+.note-row { margin-bottom: 8px; }
+.note-row:last-child { margin-bottom: 0; }
+.note-label { font-size: 12px; font-weight: 700; color: var(--text-muted); display: inline-block; margin-right: 5px;}
+.note-text { font-size: 14px; color: #e2e8f0; display: inline-block; line-height: 1.6; }
+
+/* โซนรูปภาพ */
+.trade-preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-color); cursor: zoom-in; flex-shrink: 0; transition: 0.3s;}
+.trade-preview-img:hover { transform: scale(1.1); border-color: var(--accent-color); }
+.section-label { font-size: 12px; font-weight: bold; color: var(--text-main); margin-top: 10px; margin-bottom: 5px; padding: 4px 8px; border-radius: 4px; background: rgba(255,255,255,0.1); display: inline-block;}
+.trade-img-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;}
