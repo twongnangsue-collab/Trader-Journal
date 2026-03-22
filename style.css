@@ -82,6 +82,25 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
+.lang-toggle-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--text-main);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, color 0.2s;
+    margin-left: 8px;
+    min-width: 44px;
+}
+.lang-toggle-btn:hover {
+    border-color: var(--accent-color);
+    background: rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.12);
+    color: var(--accent-color);
+}
+
 .brand-logo {
     height: 70px; 
     width: auto;
@@ -411,7 +430,7 @@ body {
     margin-top: 10px; 
 }
 
-/* 2. 🚨 แก้บัคกล่องซ้อน: บังคับซ่อนกล่องเส้นประเมื่ออัปโหลดรูปแล้ว */
+/* 2.แก้บัคกล่องซ้อน: บังคับซ่อนกล่องเส้นประเมื่ออัปโหลดรูปแล้ว */
 .carousel-container.has-images .image-upload-box {
     display: none !important;
 }
@@ -634,3 +653,363 @@ body {
 .trade-preview-img:hover { transform: scale(1.1); border-color: var(--accent-color); }
 .section-label { font-size: 12px; font-weight: bold; color: var(--text-main); margin-top: 10px; margin-bottom: 5px; padding: 4px 8px; border-radius: 4px; background: rgba(255,255,255,0.1); display: inline-block;}
 .trade-img-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;}
+
+/* =========================================
+   สไตล์ลูกบอลประวัติการเทรด 5 ออเดอร์ล่าสุด (Orbit Balls)
+   ========================================= */
+.orbit-ball {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+/* ลูกบอลกำไร (สีเขียว) */
+.orbit-ball.orbit-win {
+    background: rgba(0, 230, 118, 0.2) !important;
+    border: 2px solid #00e676 !important;
+    color: #00e676 !important;
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.4);
+}
+
+/* ลูกบอลขาดทุน (สีแดง) */
+.orbit-ball.orbit-loss {
+    background: rgba(255, 0, 60, 0.2) !important;
+    border: 2px solid #ff003c !important;
+    color: #ff003c !important;
+    box-shadow: 0 0 15px rgba(255, 0, 60, 0.4);
+}
+
+/* ปรับขนาดตัวหนังสือ % ให้พอดีกับลูกบอล */
+.orbit-percent {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+/* =========================================
+   ยกระดับดีไซน์หน้าต่าง "บันทึกเทรด" ให้เป็นมืออาชีพ (อิงธีมดำ-เขียวเดิม)
+   ========================================= */
+
+/* 1. จัดการหัวข้อ (Headers) ให้ดูขรึมและสากล */
+#addTradePage h2.page-title,
+#addTradeStep2Page h2.page-title,
+#addTradeStep3Page h2.page-title,
+#addTradeStep4Page h2.page-title {
+    color: #f8fafc !important; /* สีขาวสะอาด */
+    font-size: 24px !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.5px;
+    margin-top: 15px !important;
+    margin-bottom: 35px !important;
+    text-align: center;
+}
+
+/* 2. ยกระดับดีไซน์กล่อง Input เดิมให้ดู "แพง" ขึ้น (ลดความโค้งมนลงนิดหน่อย) */
+.pill-input, .pill-textarea {
+    background-color: rgba(0, 0, 0, 0.3) !important; /* พื้นหลังโปร่งแสงนิดๆ */
+    border: 1px solid rgba(255, 255, 255, 0.08) !important; /* ขอบหม่นบางๆ */
+    border-radius: 8px !important; /* ลดความโค้งจาก "Pill" เป็น "Rounded Rect" */
+    color: #e2e8f0 !important; /* สีตัวหนังสือ */
+    padding: 14px 18px !important; /* เพิ่มพื้นที่ภายใน */
+    font-size: 15px !important;
+    font-weight: 500;
+}
+
+/* เพิ่มสถานะ "เมื่อคลิกกรอก (Focus)" ให้เรืองแสงสีเขียวตามธีมของคุณ */
+.pill-input:focus, .pill-textarea:focus {
+    border-color: rgba(0, 230, 118, 0.6) !important; /* สีขอบเขียวนีออนเดิม */
+    box-shadow: 0 0 15px rgba(0, 230, 118, 0.2) !important; /* แสงเรืองรองสีเขียวอ่อนๆ */
+    outline: none !important;
+}
+
+/* 3. ปรับสไตล์ป้ายกำกับ (Labels) ให้ดูเป็นทางการ (งดใช้อิโมจิ) */
+.modal-label {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #94a3b8 !important; /* สีเทาหม่น */
+    text-transform: uppercase !important; /* ตัวพิมพ์ใหญ่ทั้งหมด */
+    letter-spacing: 1px !important; /* ระยะห่างตัวอักษร */
+    margin-bottom: 8px !important;
+    padding-left: 5px;
+    display: block;
+}
+
+/* 4. จัดการปุ่ม "ย้อนกลับ (←)" ให้เรียบหรูแบบ Outline (มองเห็นง่ายแต่ไม่กวนสายตา) */
+.back-btn-modern {
+    background-color: transparent !important;
+    color: #94a3b8 !important; /* สีเทาหม่น */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: none !important;
+}
+
+.back-btn-modern:hover {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* 5. จัดการปุ่ม "ถัดไป ➔ / บันทึก (Confirm)" ให้ดูโดดเด่นแต่เป็นทางการ */
+#nextStepFabBtn, #nextStep2FabBtn, #nextStep3FabBtn, #saveTradeBtn, #confirmTxBtn {
+    background: #00e676 !important; /* สีเขียวเดิมของคุณ */
+    color: #011627 !important; /* ตัวหนังสือสีดำเข้ม (เพื่อตัดกับสีเขียว) */
+    border-radius: 8px !important;
+    font-weight: 800 !important;
+    font-size: 15px !important;
+    letter-spacing: 0.5px !important;
+    text-transform: uppercase !important;
+    box-shadow: 0 4px 15px rgba(0, 230, 118, 0.3) !important; /* แสงเรืองรองสีเขียวเฉพาะปุ่มหลัก */
+}
+
+#nextStepFabBtn:hover, #saveTradeBtn:hover {
+    background: #01ff88 !important; /* สีเขียวสว่างขึ้นเวลาชี้ */
+    transform: translateY(-2px); /* ยกตัวนิดหน่อย */
+    box-shadow: 0 6px 20px rgba(0, 230, 118, 0.5) !important;
+}
+
+/* 6. ปรับสไตล์เส้นคั่นหน้า (HR) ให้ดูบางเบา */
+#addTradeStep2Page hr {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+    margin: 35px 0 !important;
+}
+
+/* ========== Overview / สถิติ ========== */
+.overview-page {
+    max-width: 1100px !important;
+    margin: 0 auto !important;
+    padding-bottom: 40px !important;
+}
+
+.overview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 36px;
+    margin-bottom: 8px;
+}
+
+.overview-title {
+    margin: 0 0 6px 0 !important;
+    text-align: left !important;
+    font-size: clamp(26px, 4vw, 34px) !important;
+}
+
+.overview-subtitle {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 520px;
+}
+
+.overview-calendar-link {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--accent-color);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.overview-calendar-link:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--accent-color);
+}
+
+.overview-period-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0 20px;
+}
+
+.overview-period-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.overview-period-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.overview-period-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.overview-period-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.overview-period-btn.active {
+    background: rgba(var(--theme-r), var(--theme-g), var(--theme-b), 0.2);
+    border-color: var(--accent-color);
+    color: #fff;
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.overview-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.overview-kpi-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 18px 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.overview-kpi-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.overview-kpi-value {
+    font-size: clamp(22px, 3.5vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--text-main);
+}
+
+.overview-kpi-value.is-pos {
+    color: var(--success-color);
+}
+
+.overview-kpi-value.is-neg {
+    color: var(--danger-color);
+}
+
+.overview-kpi-hint {
+    font-size: 11px;
+    color: #64748b;
+}
+
+.overview-row-single {
+    margin-bottom: 18px;
+}
+
+.overview-row-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+    .overview-row-split {
+        grid-template-columns: 1fr;
+    }
+}
+
+.overview-chart-main,
+.overview-chart-side {
+    margin: 0 !important;
+    max-width: none !important;
+}
+
+.overview-chart-head {
+    margin-bottom: 16px;
+}
+
+.overview-chart-head h3,
+.overview-side-title {
+    margin: 0 0 6px 0;
+    font-size: 17px;
+    color: var(--text-main);
+}
+
+.overview-chart-caption {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.overview-chart-canvas-wrap {
+    position: relative;
+    height: 280px;
+    width: 100%;
+}
+
+.overview-chart-side .overview-chart-canvas-wrap {
+    height: 240px;
+}
+
+.overview-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0 0 12px 0;
+}
+
+.overview-insight {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+}
+
+@media (max-width: 600px) {
+    .overview-insight {
+        grid-template-columns: 1fr;
+    }
+}
+
+.overview-insight-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.overview-insight-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+.overview-insight-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.4;
+}

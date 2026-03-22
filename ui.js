@@ -197,9 +197,23 @@ if (getEl('backFromTradeBtn')) {
 if (getEl('resumeTradeBtn')) getEl('resumeTradeBtn').addEventListener('click', () => { if(getEl('cancelTradeModal')) getEl('cancelTradeModal').style.display = 'none'; });
 if (getEl('confirmCancelTradeBtn')) {
     getEl('confirmCancelTradeBtn').addEventListener('click', () => {
+        // 1. ปิดหน้าต่างแจ้งเตือน
         if(getEl('cancelTradeModal')) getEl('cancelTradeModal').style.display = 'none';
+        
+        // 2. 🚨 สำคัญมาก: ต้องบังคับซ่อนฟอร์มทั้งหมด "ก่อน" สลับหน้า ไม่งั้นระบบจะบล็อค
+        ['addTradePage','addTradeStep2Page','addTradeStep3Page','addTradeStep4Page'].forEach(id => {
+            if(getEl(id)) getEl(id).style.display = 'none';
+        });
+        
+        // 3. ล้างข้อมูลที่พิมพ์ค้างไว้
         clearTradeForm();
-        goBackFromTrade();
+        
+        // 4. สลับกลับหน้าหลัก (หรือปฏิทิน) แบบเนียนๆ
+        if (typeof window.switchPage === 'function') {
+            window.switchPage(previousPage === 'calendar' ? 'calendarPage' : 'homePage');
+        } else {
+            if(getEl('homePage')) getEl('homePage').style.display = 'block';
+        }
     });
 }
 
